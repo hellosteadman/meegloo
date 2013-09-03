@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load i18n markup %}
+
+{% block content %}
+	{% block headline %}
+		<h1>{{ stream.part_of.name }}</h1>
+	{% endblock %}
+	
+	<article class="page">
+		<p class="info-header">
+			Here&rsquo;s where you can embed a stream into your own website. It&rsquo;s as simple as
+			copying and pasting a bit of HTML, and we&rsquo;ll tell you where to place it.
+		</p>
+		
+		<ol>
+			<li>
+				<h3>Tell us where you&rsquo;ll be embedding your stream</h3>
+				<p>
+					So that no-one can take your code and embed this stream on another site, please
+					type in the domain names you want the stream to be visible on. (Put each domain
+					name on a new line.)
+				</p>
+				
+				<form method="post">
+					{% if form.domains.errors %}
+						<p class="error-header">{{ form.domains.errors|join:'<br />' }}</p>
+					{% endif %}
+					
+					{{ form.domains }}
+					<input type="submit" value="Next" />
+					{% csrf_token %}
+				</form>
+				
+				<p class="tip">
+					Tip: You don&rsquo;t need to distinguish between www. and non-www.
+					domains.
+				</p>
+				
+				<div class="clear"></div>
+			</li>
+			
+			{% if embeds.count > 0 %}
+			<li>
+				<h3>Copy and paste the code below</h3>
+				
+				<textarea id="code" readonly>&lt;script src="http://{{ stream.profile.username }}.{{ request.network.domain }}{% url embed_stream stream.part_of.slug %}"&gt;&lt;/script&gt;</textarea>
+				
+				<p>
+					Right-click the code above and select <strong>Copy</strong>. Then in your website,
+					place the code where you&rsquo;d like the stream to appear.
+				</p>
+			</li>
+			{% endif %}
+		</ol>
+		
+		<p><a href="{{ stream.get_absolute_url }}">Back to my stream</a></p>
+	</article>
+{% endblock content %}
+
+{% block sidebar %}
+	<article class="module wordpress">
+		<h2>WordPress ninja?</h2>
+		
+		<p>
+			<a class="button" href="http://wordpress.org/extend/plugins/meegloo/" target="_blank">Download the Meegloo WordPress plugin</a><br />
+			to easily embed streams into your blogs.
+		</p>
+	</article>
+	
+	{% include 'sidebar/embed.inc.html' %}
+	{{ block.super }}
+{% endblock sidebar %}
+
+{% block javascript %}
+	{{ block.super }}
+	<script>
+		$(document).ready(
+			function() {
+				$('#code').bind('click',
+					function(e) {
+						$(this).select();
+					}
+				);
+			}
+		);
+	</script>
+{% endblock javascript %}

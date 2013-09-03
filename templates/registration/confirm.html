@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load i18n humanize %}
+
+{% block content %}
+	<h1>Thanks!</h1>
+	
+	<article class="page">
+		<p>
+			You&rsquo;re all signed up. Now if you don&rsquo;t mind checking your inbox,
+			you should see an email from us, with a link to confirm your email address.
+		</p>
+		
+		<p>
+			Click that link then you can login to {{ request.network.domain }} with your shiny
+			new account.
+		</p>
+	</article>
+{% endblock content %}

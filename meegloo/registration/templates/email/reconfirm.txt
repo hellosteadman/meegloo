@@ -1,0 +1,5 @@
+Hi {{ confirmation.user.first_name|default:confirmation.user.username }}.  
+You're receiving this email because you've requested to change your email address.
+
+Please confirm your new address by following the link below.  
+http://{{ network.parent.domain }}{{ confirmation.get_absolute_url }}

@@ -1,0 +1,33 @@
+{% load humanize comments gravatar %}
+<section class="comments">
+	{% for comment in obj.comments.all %}
+		<article id="comment-{{ commente.pk }}" class="post" style="background-image: url('{{ comment.author.email|gravatar:34 }}');">
+			{{ comment.text }}
+			
+			<div class="post-meta">
+				<span>
+					Posted {% if not api %}<a href="http://{{ comment.author.username }}.{{ request.network.domain }}{{ comment.get_absolute_url }}">{% endif %}{% ifequal comment.posted|timesince '0 minutes' %}just now{% else %}{{ comment.posted|timesince }} ago{% endifequal %}{% if not api %}</a>{% endif %}
+					by {% if not api %}<a href="http://{{ comment.author.username }}.{{ request.network.domain }}/">{% endif %}{{ comment.author }}{% if not api %}</a>{% endif %}
+				</soan>
+			</div>
+		</article>
+	{% endfor %}
+	
+	{% if not api %}
+		{% if request.user.is_authenticated %}
+			<h3>
+				Comment on
+				{% if set %}these posts{% else %}{{ obj.author.first_name|default:obj.author.username }}&rsquo;s post{% endif %}
+			</h3>
+		
+			{% comment_form obj %}
+		{% else %}
+			<p class="invite">
+				If you&rsquo;d like to comment on
+				{% if set %}these posts{% else %}{{ obj.author.first_name|default:obj.author.username }}&rsquo;s post{% endif %},
+				please <a href="http://{{ request.network.domain }}{% url login %}?next={{ request.path|urlencode }}">login</a> or
+				<a href="http://{{ request.network.domain }}{% url register %}">sign up</a>.
+			</p>
+		{% endif %}
+	{% endif %}
+</section>

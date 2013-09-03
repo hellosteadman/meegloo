@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load i18n humanize markup %}
+
+{% block content %}
+	<article id="welcome">
+		<h1>{{ competition.headline }}</h1>
+		{{ competition.subheading|markdown }}
+		<p>{{ competition.days_remaining|apnumber|capfirst }} day{{ competition.days_remaining|pluralize }} remaining</p>
+	</article>
+	
+	<article class="page">
+		<h2>Leaderboard</h2>
+		
+		<table class="leaderboard">
+			<thead>
+				<tr>
+					<th class="position"><abbr title="Position">#</abbr></th>
+					<th class="name">Name</th>
+					<th class="actions">Last actions</th>
+					<th class="points">Points</th>
+				</tr>
+			</thead>
+			
+			<tbody>
+				{% for entrant in leaderboard %}
+					<tr>
+						<td class="position">{{ forloop.counter }}</td>
+						<td class="name">
+							<a href="http://{{ entrant.user.username }}.{{ request.network.domain }}">{{ entrant }}</a><br />
+							<span class="signup-date">Signed up {{ entrant.entered|timesince }} ago</span>
+						</td>
+						
+						<td class="actions">
+							<ul>
+								{% for action in entrant.actions.all|slice:':3' %}
+									<li>{{ action.text }}</li>
+								{% endfor %}
+							</ul>
+						</td>
+						<td class="points">{{ entrant.points }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		
+		<div class="clear"></div>
+	</article>
+{% endblock content %}
+
+{% block sidebar %}
+	{% include 'sidebar/competition.inc.html' %}
+{% endblock sidebar %}
+
+{% block javascript %}
+	<script src="{{ MEDIA_URL }}js/signup.js"></script>
+	{{ block.super }}
+{% endblock javascript %}

@@ -1,0 +1,14 @@
+{% extends 'posts/base.inc.html' %}
+{% load highlight %}
+
+{% block post_content %}
+	{% if search %}
+		<p>{% highlight post.text with request.GET.q %}</p>
+	{% else %}
+		{% if api and request.GET.platform == 'ipad' %}
+			<p>{{ post.text }}</p>
+		{% else %}
+			<p>{{ post.text|urlize }}</p>
+		{% endif %}
+	{% endif %}
+{% endblock post_content %}

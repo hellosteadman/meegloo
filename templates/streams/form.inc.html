@@ -1,0 +1,38 @@
+<article id="postbox">
+	{% if post_form.non_field_errors %}
+		<p>{{ post_form.non_field_errors|join:'<br />' }}</p>
+	{% endif %}
+	
+	<form action="{{ stream.get_absolute_url }}" method="post">
+		{% if post_form.text.has_errors %}
+			<p>{{ post_form.text.errors|join:' '}}</p>
+		{% endif %}
+		
+		{{ post_form.text }}
+		<span class="chars-remaining">255 characters left</span>
+		<span class="question-hint">Press return again to post your question, or <a href="#poll-popup">create a poll</a></span>
+		
+		<div class="buttons">
+			<div class="tweet" title="{{ post_form.tweet.label }}">{{ post_form.tweet }} <label for="id_{{ post_form.tweet.html_name }}">Tweet</label></div>
+			<div class="geotag" title="{{ post_form.geotag.label }}">{{ post_form.geotag }} <label for="id_{{ post_form.geotag.html_name }}">Geotag</label></div>
+		</div>
+		
+		{% ifnotequal request.method 'POST' %}
+			<div class="uploadify">
+				{{ post_form.attachment }}
+			</div>
+		{% endifnotequal %}
+		
+		{{ post_form.hidden_fields|join:'' }}
+		<input type="hidden" name="stream" value="{% if stream.part_of %}{{ stream.part_of.pk }}{% else %}{{ stream.pk }}{% endif %}">
+		{% csrf_token %}
+		
+		<div class="clear"></div>
+	</form>
+</article>
+
+<script type="text/javascript">
+	user_id = {{ request.user.pk }};
+	guid = '{{ post_form.fields.guid.initial }}';
+	extensions = '{% for ext in EXTENSIONS %}*{{ ext }}{% if not forloop.last %};{% endif %}{% endfor %}';
+</script>

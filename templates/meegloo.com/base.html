@@ -1,0 +1,193 @@
+<!DOCTYPE html>{% load i18n analytics %}
+<html lang="en" class="no-js">
+	<head>
+		<meta charset="utf-8" />
+		<title>{% if title_parts %}{{ title_parts|join:' | '}} | {% endif %}{{ request.network.name|default:'Meegloo' }}{% if request.network.is_external %} - Powered by Meegloo{% endif %}</title>
+		
+		<!--[if lt IE 9]>
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+		
+		<link rel="stylesheet" href="{{ MEDIA_URL|default:'/media/' }}css/screen.css" media="screen, projection" />
+		<meta name="viewport" content="initial-scale=1.0,width=device-width" />
+		
+		{% if popup %}
+		<link rel="stylesheet" href="{{ MEDIA_URL|default:'/media/' }}css/popup.css" media="screen, projection" />
+		{% endif %}
+		<link rel="stylesheet" href="{{ MEDIA_URL|default:'/media/' }}js/fancybox/jquery.fancybox-1.3.4.css" media="screen, projection" />
+		{% block extra_css %}{% endblock %}
+		
+		<link rel="apple-touch-icon" href="{{ MEDIA_URL|default:'/media/' }}img/favicon.png" />
+		<link rel="icon" href="{{ MEDIA_URL|default:'/media/' }}img/favicon.png" />
+		
+		{% block extra_head %}{% endblock %}
+	</head>
+	
+	<body class="{% if DEBUG %}debug {% endif %}{% if popup %}popup {% endif %}{% if request.user.is_authenticated %}auth {% else %}anon {% endif %}{% if request.network.is_external %}external-network {% endif %}{{ body_classes|join:' ' }}">
+		{% if messages or request.network.is_external or active_competition %}
+			<section id="messages">
+				{% if request.network.is_external %}
+					<div class="message info static">
+						<div class="container">
+							<span>This network is powered by {{ request.network.parent.name }}. You can return to the main site any time by going to <a href="http://{{ request.network.parent.domain }}/">{{ request.network.parent.domain }}</a>.</span>
+						</div>
+					</div>
+				{% endif %}
+				
+				{% if active_competition %}
+					<div class="message info static">
+						<div class="container">
+							<a href="/win/">{{ active_competition.headline }}</a>
+						</div>
+					</div>
+				{% endif %}
+				
+				{% for message in messages %}
+					<div class="message {{ message.tags }}">
+						<div class="container">
+							<span>{{ message }}</span>
+						</div>
+					</div>
+				{% endfor %}
+			</section>
+		{% endif %}
+		
+		{% if not popup %}<header>
+			<div class="container">
+				<div class="module logo">
+					<a href="http://{{ request.network.domain }}/"><img src="{% if request.network.logo %}{{ request.network.logo.url }}{% else %}{{ MEDIA_URL|default:'/media/' }}img/logo.png{% endif %}" alt="{{ request.network.name }}{% if request.network.is_external %} - Powered by Meegloo{% endif %}" /></a>
+				</div>
+				
+				<div class="module menu swap" data-swap="menu">
+					{% block nav %}
+						{% include 'menu.inc.html' %}
+					{% endblock nav %}
+				</div>
+				
+				{% if request.user.is_anonymous and request.path != '/login/' %}
+				<div class="module login swap" data-swap="login" data-swap-parent="menu" style="display: none;">
+					<form method="post" action="{% if not LOCAL %}http://{{ request.network.domain }}{% endif %}{% url login %}?next={% filter urlencode %}http://{% if request.profile %}{{ request.profile }}.{% endif %}{{ request.network.domain }}{{ request.path }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}{% endfilter %}">
+						{% for field in login_form %}
+							<label{% if forloop.last %} class="last"{% endif %}>{{ field.label }} {{ field }}</label>
+						{% endfor %}
+						
+						{% csrf_token %}
+						<input type="submit" class="button" value="{% trans 'Login' %}">
+						<a class="button cancel" data-swap="menu" href="/">Cancel</a>
+					</form>
+				</div>
+				{% endif %}
+				
+				<div class="clear"></div>
+				{% block post_header %}{% endblock %}
+			</div>
+		</header>
+		{% endif %}
+		
+		<section>
+			<div class="container">
+				<section class="module" id="mainstage">
+					{% block content %}{% endblock %}
+				</section>
+				
+				<aside class="module" id="sidebar">
+					{% block sidebar %}
+						{% include 'sidebar/appstore.inc.html' %}
+					{% endblock %}
+				</aside>
+				
+				<div class="clear"></div>
+			</div>
+			
+			{% block extra_content %}{% endblock %}
+			
+			{% if not popup %}
+			<footer>
+				<div class="container">
+					<div class="inner">
+						<ul class="module nav" role="navigation">
+							<li>
+								{{ request.network.parent.name }}
+								<ul>
+									<li><a href="http://{{ request.network.parent.domain }}">Home</a></li>
+									<li><a href="http://{{ request.network.parent.domain }}{% url about %}">About {{ request.network.parent.name }}</a></li>
+									<li><a href="http://getsatisfaction.com/flamingtarball/products/flamingtarball_meegloo">Support forum</a></li>
+									<li><a href="http://blog.meegloo.com">Blog</a></li>
+								</ul>
+							</li>
+							
+							<li>
+								Streams
+								<ul>
+									<li><a href="http://{{ request.network.parent.domain }}{% url about_streams %}">About streams</a></li>
+									<li><a href="http://{{ request.network.parent.domain }}{% url streams %}">Latest streams</a></li>
+									<li><a href="http://{{ request.network.parent.domain }}{% url create_stream %}">Create a stream</a></li>
+								</ul>
+							</li>
+							
+							<li>
+								Networks
+								<ul>
+									<li><a href="http://{{ request.network.parent.domain }}{% url about_networks %}">About networks</a></li>
+									<li><a href="http://{{ request.network.parent.domain }}{% url networks %}">Explore networks</a></li>
+								</ul>
+							</li>
+							
+							<li>
+								Goodies
+								<ul>
+									<li><a href="http://{{ request.network.parent.domain }}{% url badges %}">Badges</a></li>
+									<li><a href="http://{{ request.network.parent.domain }}{% url downloads %}">Downloads</a></li>
+								</ul>
+							</li>
+							
+							<li>
+								Legal
+								<ul>
+									<li><a href="http://{{ request.network.parent.domain }}{% url terms %}">Terms and conditions</a></li>
+									<li><a href="http://{{ request.network.parent.domain }}{% url privacy %}">Privacy policy</a></li>
+								</ul>
+							</li>
+						</ul>
+						
+						<article class="module search">
+							<h2>Search {{ request.network.domain }}</h2>
+							<form action="{% url search %}">
+								<input type="text" name="q" />
+								<input type="submit" value="Search" />
+							</form>
+						</article>
+						
+						<div class="clear"></div>
+						{% block footer %}
+						<p>&copy; {% now "Y" %} <a href="http://flamingtarball.com" target="_blank">Flaming Tarball</a></p>
+						{% endblock footer %}
+					</div>
+				</div>
+			</footer>
+			{% endif %}
+		</section>
+		
+		{% block extra_body %}{% endblock %}
+		
+		<script src="{{ MEDIA_URL }}js/jquery.js"></script>
+		<script src="{{ MEDIA_URL }}js/jquery-ui.js"></script>
+		<script src="{{ MEDIA_URL }}js/swfobject.js"></script>
+		<script src="{{ MEDIA_URL|default:'/media/' }}js/modernizr.js"></script>
+		<script src="{{ MEDIA_URL|default:'/media/' }}js/functions.js"></script>
+		<script src="{{ MEDIA_URL|default:'/media/' }}js/jquery-hashchange.js"></script>
+		
+		<script>var switchTo5x = true;</script>
+		<script src="http://w.sharethis.com/button/buttons.js"></script>
+		<script>
+			stLight.options(
+				{
+					publisher: 'ddb2f045-1c03-4786-b85d-15aeb347f448'
+				}
+			);
+		</script>
+		
+		{% block javascript %}{% endblock %}
+		{% google_analytics %}
+	</body>
+</html>

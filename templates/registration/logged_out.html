@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<h1>Logged out</h1>
+	
+	<article class="page">
+		<p>You&rsquo;ll be taken back to the homepage in a moment.<br />If you&rsquo;re not, <a href="/">try going home yourself</a> :)</p>
+	</article>
+{% endblock %}
+
+{% block javascript %}
+	{{ block.super }}
+	
+	<script>
+		setTimeout(
+			function() {
+				window.location = '/';
+			},
+			3000
+		);
+	</script>
+{% endblock javascript %}

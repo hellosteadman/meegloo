@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load i18n humanize %}
+
+{% block content %}
+	<h1>Edit your Meegloo profile</h1>
+	
+	<article class="page">
+		<form action="{% url edit_profile %}" method="post" enctype="multipart/form-data">
+			{% if form.errors %}
+				<p class="error-header">
+					Whoops! Looks like there&rsquo;s a problem or two with the details
+					you&rsquo;ve submitted.
+				</p>
+			{% endif %}
+
+			{% for field in form %}
+				<div class="form-field">
+					<div class="module label">
+						<label for="id_{{ field.html_name }}">{{ field.label }}</label>
+						{% if field.errors %}
+							<br /><span class="errors">{{ field.errors }}</span>
+						{% else %}
+							<br /><span class="help-text">{{ field.help_text }}</span>
+						{% endif %}
+					</div>
+					
+					<div class="module field">
+						{{ field }}
+					</div>
+				</div>
+			{% endfor %}
+			
+			{% csrf_token %}
+			
+			<div class="module submit">
+				<input type="submit" value="{% ifequal request.method 'POST' %}Try again{% else %}Save my profile{% endifequal %}" />
+			</div>
+		</form>
+		
+		<div class="clear"></div>
+	</article>
+{% endblock content %}
+
+{% block sidebar %}
+	{% if competition_entry %}
+		{% include 'sidebar/competition.inc.html' with entry=competition_entry %}
+	{% endif %}
+	
+	<article class="module connections">
+		<h2>Connect your profiles</h2>
+		<p>
+			Why not connect up your social media profiles to make it easier to post to sites using
+			Meegloo, and to help visitors discover where else they can find you.
+		</p>
+		
+		<ul>
+			{% for connection in connections %}
+			<li>
+				<a href="{{ connection.url }}">
+					<img src="{{ MEDIA_URL }}img/switch-{% if connection.connected %}on{% else %}off{% endif %}.png" />
+					<span>{{ connection.verbose_name }}</span>
+				</a>
+				{% if connection.connected and connection.friendships %}
+				<a class="invite" href="{% url oauth_connect connection.site %}">Invite and follow</a>
+				{% endif %}
+			</li>
+			{% endfor %}
+		</ul>
+	</article>
+	
+	{% include 'sidebar/embed.inc.html' %}
+	{{ block.super }}
+{% endblock sidebar %}

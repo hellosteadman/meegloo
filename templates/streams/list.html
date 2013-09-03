@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load i18n markup humanize %}
+
+{% block content %}
+	{% block headline %}
+		<h1>Join the discussion</h1>
+	{% endblock %}
+	
+	<article class="page">
+		<article class="module latest-streams">
+			<h2>The latest {{ streams.count|apnumber|default:'' }} stream{{ streams.count|pluralize }}</h2>
+			<p>Here are the latest discussions people are having{% if request.network.is_external %} at {{ request.network.name }}, powered by Meegloo{% else %} on Meegloo{% endif %}. Why not join in?</p>
+			
+			{% for stream in streams %}
+				<a class="stream" href="http://{{ request.network.domain }}{{ stream.get_absolute_url }}">
+					<h3>{{ stream.name }}</h3>
+					
+					{% if stream.description %}{{ stream.description|markdown }}{% endif %}
+					
+					{% with stream.latest_post as latest_post %}{% if latest_post %}
+						<p>
+							<strong>Latest post:</strong>
+							{{ latest_post }}, posted {{ latest_post.posted|timesince }} ago
+							by {{ latest_post.author.get_full_name|default:latest_post.author.username }}
+						</p>
+					{% else %}
+						<p>No posts just yet</p>
+					{% endif %}{% endwith %}
+					
+					<p class="stream-meta">
+						Updated {{ stream.updated|timesince }} ago{% spaceless %}
+						{% if stream.tags.count > 0 %}, tagged
+							{{ stream.tags.all|join:', ' }}
+						{% endif %}
+					{% endspaceless %}</p>
+				</a>
+			{% endfor %}
+		</article>
+		
+		<div class="clear"></div>
+	</article>
+{% endblock content %}
+
+{% block sidebar %}
+	<article class="module create">
+		<h2>Don&rsquo;t see anything you like?</h2>
+		<p>You can <a href="{% url create_stream %}">start your own stream</a> in a matter of seconds</p>
+	</article>
+	
+	{{ block.super }}
+{% endblock sidebar %}

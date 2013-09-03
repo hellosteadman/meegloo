@@ -1,0 +1,29 @@
+{% extends 'iframe.html' %}
+
+{% block content %}
+	<section class="posts">
+		{% include 'posts.inc.html' %}
+	</section>
+{% endblock content %}
+
+{% block javascript %}
+	{{ block.super }}
+	<script src="{{ MEDIA_URL }}js/jwplayer/jwplayer.js"></script>
+	<script src="{{ MEDIA_URL }}js/stream.js"></script>
+	
+	<script>
+		{% if latest_id %}var latest_id = {{ latest_id }};{% endif %}
+		$(document).ready(
+			function() {
+				{% for post in posts.object_list %}
+					{% include post.js_template_name %}
+				{% endfor %}
+				
+				{% if latest_id or not request.is_ajax %}
+				{% if not latest_id %}latest_id = 0;{% endif %}
+				checkTimeout = setTimeout(checkLatest, 3000);
+				{% endif %}
+			}
+		);
+	</script>
+{% endblock javascript %}

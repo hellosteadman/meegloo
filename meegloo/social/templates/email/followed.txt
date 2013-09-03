@@ -1,0 +1,7 @@
+Hi {{ follow.followee.first_name|default:follow.followee.username }}.
+
+{{ follow.follower.get_full_name|default:follow.follower.username }} is now following you on Meegloo.
+This means that {{ follow.follower.first_name|default:'they' }} can find your stories more easily.
+
+You can view {{ follow.follower.first_name|default:follow.follower.username }}'s stories at
+http://{{ follow.follower.username }}.meegloo.com/

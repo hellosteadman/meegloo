@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load i18n humanize thumbnail %}
+
+{% block content %}
+	<article id="welcome">
+		<p class="first">
+			Use your phone to share <strong>text</strong>, <strong>audio</strong>,
+			<strong>video</strong> and <strong>photos</strong> about the topics
+			you care about, and easily share them with your friends and followers.
+		</p>
+		
+		<p>
+			Whether you&rsquo;re at a small meetup or a large conference, you
+			can post audio and video clips, photos and text updates to your
+			followers, through one simple app.
+		</p>
+		
+		<p>
+			Add to the conversation through Twitter, Flickr and Facebook, but
+			without having to open multiple apps or remember the right hashtag.
+		</p>
+	</article>
+	
+	{% if request.user.is_authenticated %}
+		<article class="page">
+			<h2>Welcome back {{ request.user.first_name|default:request.user.username }}!</h2>
+			{% if user_streams.count > 0 %}
+				<p>
+					Here are your streams{% if request.network.is_external %} on the {{ request.network }} network{% endif %},
+					so you can jump right back in. Or you can <a href="{% url create_stream %}">create a new one</a>.
+				</p>
+				
+				{% for stream in user_streams|slice:':5' %}
+					<a class="stream" href="{% url stream stream.part_of.slug %}">
+						<h3>{{ stream.part_of.name }}</h3>
+						
+						<p class="stream-meta">
+							Updated {{ stream.updated|timesince }} ago
+						</p>
+					</a>
+				{% endfor %}
+			{% else %}
+				<p>
+					You haven&rsquo;t created any streams{% if request.network.is_external %} on the {{ request.network }} network{% endif %}. Why not 
+					<a href="{% url create_stream %}">create a new one</a> now?
+				</p>
+			{% endif %}
+		</article>
+	{% endif %}
+	
+	<a id="lightbox-link" href="#lightbox">
+		<h2>Take a quick tour</h2>
+		<p>Watch a minute-long look through Meegloo for iPhone</p>
+	</a>
+	
+	{% if request.user.is_anonymous %}
+		<article class="page">
+			<h2>What&rsquo;s your story?</h2>
+			<p>Sign up below and you&rsquo;ll be ready to tell it in seconds.</p>
+			
+			{% include 'registration/signup.inc.html' with form=signup_form %}
+			
+			<div class="clear"></div>
+		</article>
+	{% endif %}
+	
+	<div style="display: none;">
+		<div id="lightbox">
+			<div id="lightbox-video" class="media-player video"></div>
+		</div>
+	</div>
+{% endblock content %}
+
+{% block sidebar %}
+	{{ block.super }}
+	
+	<article class="module grid">
+		<h2>Latest pictures</h2>
+		<ul>
+			{% for post in posts.object_list|slice:':12' %}
+				{% thumbnail post.media.image.content '105x105' crop='center' as thumb %}
+				<li style="background-image: url('{{ thumb.url }}');">
+					<a href="http://{{ post.stream.profile.username }}.{{ post.stream.part_of.network.domain }}{{ post.get_absolute_url }}">
+						<span class="title">{{ post.text }}</span>
+						<span class="meta">Posted {{ post.posted|timesince }} ago by {{ post.author.get_full_name|default:post.author.username }}</span>
+					</a>
+				</li>
+				{% endthumbnail %}
+			{% endfor %}
+		</ul>
+	</article>
+{% endblock sidebar %}
+
+{% block javascript %}
+	<script src="{{ MEDIA_URL }}js/jwplayer/jwplayer.js"></script>
+	<script src="{{ MEDIA_URL }}js/fancybox/jquery.fancybox-1.3.4.js"></script>
+	<script src="{{ MEDIA_URL }}js/signup.js"></script>
+	
+	<script>
+		$(document).ready(
+			function() {
+				$('.grid ul li').hover(
+					function() {
+						$(this).find('a').animate(
+							{
+								top: 0,
+								bottom: 0
+							}
+						).find('.meta').fadeIn();
+					},
+					function() {
+						$(this).find('a').animate(
+							{
+								top: 74,
+								bottom: 'inherit'
+							}
+						).find('.meta').fadeOut();
+					}
+				);
+			}
+		);
+		
+		$(document).ready(
+			function() {
+				$('a#lightbox-link').fancybox(
+					{
+						type: 'inline',
+						padding: 0,
+						margin: 0,
+						overlayColor: '#000',
+						overlayOpacity: 0.7
+					}
+				);
+			}
+		);
+		
+		jwplayer('lightbox-video').setup(
+			{
+				'file': '{{ MEDIA_URL }}welcome/video.m4v',
+				'image': '{{ MEDIA_URL }}welcome/thumbnail.jpg',
+				'width': 596,
+				'height': 448,
+				'skin': '{{ MEDIA_URL }}js/jwplayer/skins/modieus.zip',
+				'provider': 'http',
+				'http.startparam': 'start',
+				'modes': [
+					{
+						'type': 'flash',
+						'src': '{{ MEDIA_URL }}js/jwplayer/player.swf'
+					},
+					{
+						'type': 'html5',
+						'config': {
+							'file': '{{ MEDIA_URLL }}welcome/video.m4v',
+							'provider': 'video'
+						}
+					}
+				]
+			}
+		);
+	</script>
+	
+	{{ block.super }}
+{% endblock javascript %}

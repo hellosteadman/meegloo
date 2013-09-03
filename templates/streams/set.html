@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+	<h1><a href="{{ stream.get_absolute_url }}">{{ stream }}</a></h1>
+	
+	{% if request.user.is_anonymous %}
+		<article id="welcome">
+			<p class="first">{% spaceless %}
+				{{ stream.profile.first_name|default:stream.profile.username }} is
+				using Meegloo to share a {{ set.get_kind_display }} collection
+				about {{ stream }}. You can use Meegloo to share content about the topics
+				that are important to you. <a href="{% url register %}">Sign up now &raquo;</a>
+			{% endspaceless %}</p>
+			
+			<p>{% spaceless %}
+				<a href="http://{{ stream.profile.username }}.{{ request.network.domain }}{{ stream.get_absolute_url }}">See more of
+				{{ stream.profile.first_name|default:stream.profile.username }}&rsquo;s coverage of
+				{{ stream }}</a>
+			{% endspaceless %}</p>
+			
+			<div class="clear"></div>
+		</article>
+	{% endif %}
+	
+	<section class="page">
+		{% include 'social/sharethis.inc.html' %}
+	</section>
+	
+	<section class="posts">
+		{% include 'posts/set.inc.html' with single='True' %}
+		{% include 'social/comments.inc.html' with obj=set set='True' %}
+	</section>
+{% endblock content %}
+
+{% block sidebar %}
+	{% include 'streams/sidebar.inc.html' %}
+{% endblock sidebar %}
+
+{% block javascript %}
+	{{ block.super }}
+	<script src="{{ MEDIA_URL }}js/jwplayer/jwplayer.js"></script>
+	
+	<script>
+		$(document).ready(
+			function() {
+				{% for post in set.posts.all %}
+					{% include post.js_template_name %}
+				{% endfor %}
+			}
+		);
+	</script>
+{% endblock javascript %}

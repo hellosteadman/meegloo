@@ -1,0 +1,12 @@
+{% extends 'posts/text.inc.html' %}
+{% load questions %}
+
+{% block after_body %}
+	{% if not search %}
+		{% question_form post %}
+	{% endif %}
+	
+	<div id="answers-{{ post.pk }}">
+		{% question_answers post %}
+	</div>
+{% endblock %}

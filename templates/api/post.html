@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<style>
+			body {
+				font-family: 'Helvetica', sans-serif; font-size: 16px;
+			}
+			
+			.post {
+				background: url('{{ MEDIA_URL }}img/icon-{{ post.kind }}.png') no-repeat 5px 5px; padding-left: 44px;
+				min-height: 44px;{% if request.GET.fontSize %} font-size: {{ request.GET.fontSize }};{% endif %}
+			}
+			
+			.post p { margin: 0; }
+			.post table { width: {{ request.GET.width|add:'-61' }}px; }
+			.post td.percent { background: #fff; width: 50%; height: 22px; }
+			.post td.percent .bar-container { width: 100%; display: block; position: relative; height: 22px; }
+			.post td.percent .bar { background: #ddd; display: block; position: absolute; height: 22px; }
+			.post td.percent .percent { position: absolute; right: 5px; }
+			
+			.post .post { margin: 5px 0 5px 0; }
+			.post-meta { font-size: 12px; }
+			textarea { border: 1px solid #999; padding: 5px; width: {{ request.GET.width|add:'-69' }}px }
+			input[type=submit] { float: right; background: #000; color: #fff; border-width: 0; }
+		</style>
+		
+		<meta name="viewport" content="initial-scale=1.0,width={{ request.GET.width|default:'device-width' }},user-scalable=no" />
+	</head>
+	<body>
+		{% include post.html_template_name with api='True' %}
+		<hr />
+		{% include 'social/comments.inc.html' with obj=post api='True' %}
+		
+		<script src="{{ MEDIA_URL }}js/jquery.js"></script>
+		<script src="{{ MEDIA_URL }}js/swfobject.js"></script>
+		<script src="{{ MEDIA_URL }}js/jwplayer/jwplayer.js"></script>
+		
+		<script>
+			$(document).ready(
+				function() {
+					{% include post.js_template_name with api='True' %}
+					{% if request.GET.webview %}
+					$('a').bind('click',
+						function(e) {
+							e.preventDefault();
+							Titanium.App.fireEvent('{{ request.GET.webview }}Click',
+								{
+									url: $(this).attr('href')
+								}
+							);
+						}
+					);
+					{% endif %}
+					
+					Titanium.App.fireEvent('{{ request.GET.webview }}Resize',
+						{
+							height: $('body').height()
+						}
+					);
+					
+					{% if post.kind == 'url' and post.embeddables.count == 0 %}
+					$('article.post.url-post p').each(
+						function() {
+							var text = $(this).html();
+							var re = new RegExp(/(ftp|http|https|file):\/\/[\S]+(\b|$)/gim);
+							var url = text.match(re);
+							
+							if(url) {
+								Titanium.App.fireEvent('{{ request.GET.webview }}URL',
+									{
+										url: url
+									}
+								);
+							}
+						}
+					);
+					{% endif %}
+				}
+			);
+		</script>
+	</body>
+</html>

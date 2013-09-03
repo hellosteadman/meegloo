@@ -1,0 +1,10 @@
+{% load markup %}
+
+<article class="clear module description">
+	<h2>About {{ stream }}</h2>
+	{% if stream.part_of %}
+		{{ stream.part_of.description|markdown }}
+	{% else %}
+		{{ stream.description|markdown }}
+	{% endif %}
+</article>

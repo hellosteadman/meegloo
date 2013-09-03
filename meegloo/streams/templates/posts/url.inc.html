@@ -1,0 +1,17 @@
+{% extends 'posts/text.inc.html' %}
+{% if nojq %}{% load oembed %}{% endif %}
+
+{% block post_content %}
+	{{ block.super }}
+	{% for embeddable in post.embeddables.all %}
+		{% if nojq or api %}
+			{% if request.GET.width %}
+				{% oembed_nojson embeddable.url request.GET.width %}
+			{% else %}
+				{% oembed_nojson embeddable.url 320 %}
+			{% endif %}
+		{% else %}
+			<div id="{{ embeddable.tag }}"></div>
+		{% endif %}
+	{% endfor %}
+{% endblock post_content %}

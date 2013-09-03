@@ -1,0 +1,21 @@
+{% load markup %}{{ header|markdown }}
+
+{% for section in sections %}
+	<p style="font-size: 18px; font-weight: bold; margin: 0;">{{ section.title }}</p>
+	<table cellpadding="0" cellspacing="0" width="550" align="center">
+		<tr valign="top">
+			{% if forloop.counter|divisibleby:2 %}
+			<td align="left" width="155">{% if section.image %}<img src="{{ section.image.url }}" hspace="5" vspace="5" />{% endif %}</td>
+			{% endif %}
+			
+			<td align="left">
+				{{ section.body|markdown }}
+			</td>
+			
+			{% if not forloop.counter|divisibleby:2 %}
+			<td align="right" width="155">{% if section.image %}<img src="{{ section.image.url }}" align="right" />{% endif %}</td>
+			{% endif %}
+		</tr>
+	</table>
+{% endfor %}
+{{ footer|markdown }}

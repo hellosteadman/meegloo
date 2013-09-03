@@ -1,0 +1,11 @@
+<article class="module">
+	<h2>Join this stream</h2>
+	<p>
+		Got something to add? Why not
+		{% if stream.slug %}
+		<a href="{% url join_stream stream.slug %}">join the stream</a>?
+		{% else %}
+		<a href="{% url join_stream stream.part_of.slug %}">join the stream</a>?
+		{% endif %}
+	</p>
+</article>

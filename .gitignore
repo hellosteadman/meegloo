@@ -1,0 +1,6 @@
+._*
+*.pyc
+logs/*
+static/*
+meegloo/settings_local.py
+/Meegloo.tmproj

@@ -1,0 +1,23 @@
+<form action="{% url answer_question question.content_type.app_label question.content_type.model question.object_id %}" method="post">
+	{% if is_authenticated and not has_voted %}
+		{% for option in question.options.all %}
+			<label><input type="radio" name="answer" value="{{ option.pk }}" />{{ option.label }}</label>{% if not forloop.last %}<br />{% endif %}
+		{% endfor %}
+	{% else %}
+		{% if not has_voted %}
+			<ul>
+				{% for option in question.options.all %}
+					<li>{{ option.label }}</li>
+				{% endfor %}
+			</ul>
+			
+			<p class="invite">
+				If you&rsquo;d like to vote, please
+				<a href="{% url login %}">login</a> or
+				<a href="{% url register %}">sign up</a>.
+			</p>
+		{% endif %}
+	{% endif %}
+	
+	{% csrf_token %}
+</form>

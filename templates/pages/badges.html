@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<h1>Show your love</h1>
+	<article class="page badges">
+		{% if request.user.is_anonymous %}
+		<p class="info-header">
+			These badges work beast if you <a href="{% url login %}?next={{ request.path|urlencode }}">login</a> first.
+		</p>
+		{% endif %}
+		
+		{% with 'http://meegloo-badges.s3-external-3.amazonaws.com/' as badges_url %}
+		<p>Tell the world you can be found on {{ request.network.parent.domain }} with one of our lovely badges.</p>
+		
+		<article class="step" id="step-1">
+			<h2>Step one: pick a style</h2>
+			<p>We have a few differnet styles to choose from, so just click the one you like the look of.</p>
+			
+			<h3>Wide</h3>
+			<p>
+				<a href="#160x24.blue.jpg"><img src="{{ badges_url }}160x24.blue.jpg" title="160x24, blue background" /></a>
+				<a href="#160x24.grey.jpg"><img src="{{ badges_url }}160x24.grey.jpg" title="160x24, grey background" /></a>
+				<a href="#160x24.orange.jpg"><img src="{{ badges_url }}160x24.orange.jpg" title="160x24, orange background" /></a>
+			</p>
+			
+			<h3>Square</h3>
+			<p>
+				<a href="#34x34.blue.jpg"><img src="{{ badges_url }}34x34.blue.jpg" title="34x34, blue background" /></a>
+				<a href="#34x34.grey.jpg"><img src="{{ badges_url }}34x34.grey.jpg" title="34x34, grey background" /></a>
+				<a href="#34x34.orange.jpg"><img src="{{ badges_url }}34x34.orange.jpg" title="34x34, orange background" /></a>
+				
+				<a href="#34x34.alpha.black.png"><img class="alpha" src="{{ badges_url }}34x34.alpha.black.png" title="34x34, black mug logo (transparent background)" /></a>
+				<a href="#34x34.alpha.blue.png"><img class="alpha" src="{{ badges_url }}34x34.alpha.blue.png" title="34x34, blue mug logo (transparent background)" /></a>
+				<a href="#34x34.alpha.orange.png"><img class="alpha" src="{{ badges_url }}34x34.alpha.orange.png" title="34x34, orange mug logo (transparent background)" /></a>
+				<a href="#34x34.alpha.white.png"><img class="alpha" src="{{ badges_url }}34x34.alpha.white.png" title="34x34, white mug logo (transparent background)" /></a>
+			</p>
+		</article>
+		
+		<article class="step" id="step-2" style="display: none;">
+			<h2>Step two: copy and paste</h2>
+			<p>Right-click the code in the box below and select <em>Copy</em> from the menu.</p>
+			<textarea id="code" readonly="readonly"></textarea>
+			
+			<p>Then just paste the code into your website, wherever you want the badge to appear.</p>
+		</article>
+		{% endwith %}
+	</article>
+{% endblock content %}
+
+{% block javascript %}
+	{{ block.super }}
+	
+	<script>
+		function badgeHash() {
+			var hash = document.location.hash;
+			var src = 'http://meegloo-badges.s3-external-3.amazonaws.com/' + hash.substr(1);
+			var code = '<a href="http://{% if request.user.is_authenticated %}{{ request.user.username }}.{% endif %}{{ request.network.parent.domain }}/"><img src="' + src + '" alt="Find me on {{ request.network.parent.domain }}" title="Find me on {{ request.network.parent.domain }}" /></a>';
+			var img = $('img[src="' + src + '"]');
+			
+			if(img.size() > 0) {
+				if(hash != null && hash != '' && hash != '#') {
+					$('#code').val(code);
+					
+					$('#step-2').show();
+				} else {
+					$('#step-2').hide();
+				}
+			} else {
+				$('#step-2').hide();
+			}
+		}
+		
+		$(document).ready(
+			function() {
+				$(window).hashchange(badgeHash);
+				badgeHash();
+				
+				$('textarea#code').bind('focus',
+					function(e) {
+						$(this).select();
+					}
+				);
+			}
+		);
+	</script>
+{% endblock javascript %}

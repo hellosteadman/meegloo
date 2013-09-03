@@ -1,0 +1,16 @@
+{% extends 'posts/base.inc.html' %}
+{% load thumbnail %}
+
+{% block post_content %}
+	{% if nojq %}
+		<iframe src="http://{{ post.author.username }}.{{ request.network.domain }}{% url embed_post post.stream.part_of.slug post.pk %}" style="border-width: 0; width: 320px; height: 180px;"></iframe>
+	{% else %}
+		{% if api %}
+			<video id="post-{{ post.pk }}" src="{{ post.media.mp4.content.url }}" controls width="606"></video>
+		{% else %}
+			<div id="post-{{ post.pk }}" class="media-player video"></div>
+		{% endif %}
+	{% endif %}
+	
+	<p{% if nojq %} class="meegloo-post-title"{% endif %}>{% if not api %}<a href="http://{{ post.author.username }}.{{ request.network.domain }}{{ post.get_absolute_url }}">{% endif %}{{ post.text }}{% if not api %}</a>{% endif %}</p>
+{% endblock post_content %}

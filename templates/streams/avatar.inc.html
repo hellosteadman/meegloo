@@ -1,0 +1,8 @@
+{% load gravatar %}
+
+<div class="avatar">
+	<a href="http://{{ request.profile.username }}.{{ request.network.domain }}">
+		<img src="{{ request.profile.email|gravatar:100 }}" />
+		<span>{{ request.profile.get_full_name|default:request.profile.username }}</span>
+	</a>
+</div>

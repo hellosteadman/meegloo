@@ -1,0 +1,8 @@
+<section class="clear module">
+	<h2>{{ request.profile.get_full_name|default:request.profile.username }}&rsquo;s {% if stream %} Other {% endif %}Streams</h2>
+	<ul>
+		{% for stream in other_streams|slice:':5' %}
+			<li><a href="{{ stream.get_absolute_url }}">{{ stream.part_of.name }}</a></li>
+		{% endfor %}
+	</ul>
+</section>

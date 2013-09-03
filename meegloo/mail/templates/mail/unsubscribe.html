@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Unsubscribe from {{ request.network.parent.name }} emails</title>
+		<link rel="shortcut icon" href="/favicon.ico">
+		<link rel="icon" href="/favicon.png">
+		
+		<!--[if lt IE 9]>
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+		
+		<style>
+			html, body, div, span, applet, object, iframe,
+			h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+			a, abbr, acronym, address, big, cite, code,
+			del, dfn, em, img, ins, kbd, q, s, samp,
+			small, strike, strong, sub, sup, tt, var,
+			b, u, i, center,
+			dl, dt, dd, ol, ul, li,
+			fieldset, form, label, legend,
+			table, caption, tbody, tfoot, thead, tr, th, td,
+			article, aside, canvas, details, embed, 
+			figure, figcaption, footer, header, hgroup, 
+			menu, nav, output, ruby, section, summary,
+			time, mark, audio, video {
+				margin: 0; padding: 0; border: 0; font-size: 100%;
+				font: inherit; vertical-align: baseline;
+			}
+			
+			article, aside, details, figcaption, figure, 
+			footer, header, hgroup, menu, nav, section { display: block; }
+			body { line-height: 1; }
+			ol, ul { list-style: none; }
+			blockquote, q { quotes: none; }
+			blockquote:before, blockquote:after,
+			q:before, q:after { content: ''; content: none; }
+			table { border-collapse: collapse; border-spacing: 0; }
+			
+			body {
+				background: #f4f4f4; margin: 50px auto 50px auto; padding: 0;
+				font-family: Arial, Helvetica, sans-serif; font-size: 90%;
+				line-height: 1.5em;
+			}
+			
+			article {
+				margin: 0 auto 0 auto; width: 480px; background: #fff; padding: 10px;
+				-moz-box-shadow: 0 5px 100px #ddd;
+				-webkit-box-shadow: 0 5px 100px #ddd;
+				box-shadow: 0 5px 100px #ddd; color: #333;
+			}
+			
+			form {
+				margin: 0 auto 0 auto; width: 476px; padding: 10px; background: #d4d4d4;
+				-moz-box-shadow: 0 5px 100px #ddd;
+				-webkit-box-shadow: 0 5px 100px #ddd;
+				box-shadow: 0 5px 100px #ddd;
+			}
+			
+			h1 { font-size: 1.5em; line-height: 1.25em; }
+			p { margin: 0.5em 0 0.5em 0; }
+			p.error {
+				background: #900; color: #fff; font-weight: bold; padding: 10px;
+				margin: -10px -10px 10px -10px;
+			}
+			
+			input[type=text] {
+				border: 1px solid #ccc; border-radius: 5px; padding: 5px; display: block;
+				float: left;
+			}
+			
+			input[type=submit] {
+				border-width: 0; background: #d70; color: #fff; font-weight: bold;
+				display: block; float: right; padding: 5px;
+			}
+		</style>
+	</head>
+	
+	<body>
+		<article>
+			<h1>Let&rsquo;s get you unsubscribed</h1>
+			<p>
+				We couldn&rsquo;t automatically unsubscribe you because of a foul-up our end (which shouldn&rsquo;t
+				happen again), so if you just pop in your email address or {{ request.network.parent.name }}
+				username, we&rsquo;ll get you unsubscribed from all emails.
+			</p>
+			
+			<p>Sorry to mess you about.</p>
+		</article>
+		
+		<form method="post">
+			{% if request.method == 'POST' %}
+				<p class="error">Sorry, we couldn&rsquo;t find anything that matched those details.</p>
+			{% endif %}
+			
+			<input type="text" placeholder="Username or email address"{% if request.POST.name %} value="{{ request.POST.name }}"{% endif %} name="name" size="50" />
+			<input type="submit" value="Unsubscribe" />
+			
+			<div style="clear: both;"></div>
+			{% csrf_token %}
+		</form>
+	</body>
+</html>

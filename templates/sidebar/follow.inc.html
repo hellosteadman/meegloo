@@ -1,0 +1,11 @@
+<section class="clear module tokens">
+	<h2>Follow {{ request.profile.first_name|default:request.profile.username }}</h2>
+	
+	<ul>
+		{% for token in request.profile.oauth_tokens.with_usernames %}
+		<li>
+			<a href="{{ token.get_user_url }}" target="_blank" title="{{ token.username }} on {{ token.site|capfirst }}"><img src="{{ MEDIA_URL }}img/social/{{ token.site }}.png" alt="{{ token.site|capfirst }}" /></a>
+		</li>
+		{% endfor %}
+	</ul>
+</section>

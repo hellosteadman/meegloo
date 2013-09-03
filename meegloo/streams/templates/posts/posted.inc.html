@@ -1,0 +1,1 @@
+<a class="date sliding" href="http://{{ obj.stream.profile.username }}.{{ obj.stream.part_of.network.domain }}{{ obj.get_absolute_url }}" data-date="{{ date|date:'Y-m-d H:i:s' }}">{% ifequal date|timesince '0 minutes' %}just now{% else %}{{ date|timesince }} ago{% endifequal %}</a>

@@ -1,0 +1,33 @@
+{% load i18n %}
+<nav>
+	{% if request.user.is_anonymous %}
+		<a href="{% if not LOCAL %}http://meegloo.com{% endif %}{% url register %}">{% trans 'Sign up' %}</a>
+		<a href="{% if not LOCAL %}http://meegloo.com{% endif %}{% url register %}?next={% filter urlencode %}http://{{ request.network.domain }}{% url create_stream %}{% endfilter %}">{% trans 'Create a new stream' %}</a>
+	{% else %}
+		<a href="{% if not LOCAL %}http://{{ request.network.domain }}{% endif %}{% url create_stream %}">{% trans 'Create a new stream' %}</a>
+	{% endif %}
+	
+	<a href="{% if not LOCAL %}http://{{ request.network.domain }}{% endif %}{% url streams %}">{% if request.user.is_authenticated %}{% trans 'Join a stream' %}{% else %}{% trans 'Latest streams' %}{% endif %}</a>
+	
+	<a href="http://blog.meegloo.com" target="_blank">{% trans 'Blog' %}</a>
+	<a href="http://getsatisfaction.com/flamingtarball/products/flamingtarball_meegloo" target="_blank">{% trans 'Support' %}</a>
+	
+	{% if request.user.is_authenticated %}
+		<a href="{% if not LOCAL %}http://{{ request.user.username }}.meegloo.com{% endif %}{% url edit_profile %}">Profile</a>
+		<a href="{% if not LOCAL %}http://{{ request.network.domain }}{% endif %}{% url logout %}">Log out</a>
+		{% if network_memberships > 0 %}<a class="networks" href="javascript:;">My Networks</a>{% endif %}
+		<a class="streams" href="javascript:;">My Streams</a>
+		
+		{% if network_memberships > 0 %}
+		<nav class="networks">
+			<img src="{{ MEDIA_URL }}img/nav-streams-loading.gif" alt="Loading" />
+		</nav>
+		{% endif %}
+		
+		<nav class="streams">
+			<img src="{{ MEDIA_URL }}img/nav-streams-loading.gif" alt="Loading" />
+		</nav>
+	{% else %}
+		<a href="{% if not LOCAL %}http://{{ request.network.domain }}{% endif %}{% url login %}?next={% filter urlencode %}http://{{ request.network.domain }}{{ request.path }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}{% endfilter %}"{% ifnotequal request.path '/login/' %} data-swap="login"{% endifnotequal %}>{% trans 'Log in' %}</a>
+	{% endif %}
+</nav>

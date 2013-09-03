@@ -1,0 +1,12 @@
+<article class="module options">
+	<h2>This is your stream</h2>
+	<ul>
+		{% if stream.slug %}
+		<li class="edit"><a href="{% url edit_stream stream.slug %}">Edit stream details</a></li>
+		<li class="embed"><a href="{% url embed_stream_options stream.slug %}">Embed this stream in your website</a></li>
+		{% else %}
+		<li class="edit"><a href="{% url edit_stream stream.part_of.slug %}">Edit stream details</a></li>
+		<li class="embed"><a href="{% url embed_stream_options stream.part_of.slug %}">Embed this stream in your website</a></li>
+		{% endif %}
+	</ul>
+</article>

@@ -1,0 +1,31 @@
+{% load humanize %}
+<article class="{% if nojq %}meegloo-{% endif %}post {{ post.kind }}-post" data-id="{{ post.pk }}" data-kind="{{ post.kind }}" {% if not set and post.sets.count > 0 %} data-set="{{ post.sets.all.0.pk }}"{% endif %}{% spaceless %}
+	{% if nojq %} style="background: url('{{ MEDIA_URL }}img/icon-{{ post.kind }}.png') no-repeat 0 0; padding: 0 0 0 38px;"{% endif %}{% endspaceless %}>
+	{% block post_content %}{% endblock %}
+	
+	{% if not set and not api %}
+		<div class="{% if nojq %}meegloo-{% endif %}post-meta">
+			<span{% if nojq %} style="font-size: 10px;"{% endif %}>
+				{% if nometa %}
+					by <a href="http://{{ post.author.username }}.{{ post.stream.part_of.network.domain }}/">{{ post.author }}</a>,
+					about <a href="http://{{ post.author.username }}.{{ post.stream.part_of.network.domain }}{{ post.stream.part_of.get_absolute_url }}">{{ post.stream }}</a>
+				{% else %}
+					Posted {% include 'posts/posted.inc.html' with date=post.posted obj=post %}
+					by <a href="http://{{ post.author.username }}.{{ post.stream.part_of.network.domain }}/">{{ post.author }}</a>{% if post.area %},
+					from <a href="http://maps.google.com/maps?q={{ post.latitude }},{{ post.longitude }}" targert="_blank">{{ post.area }}</a>{% endif %}{% if not single %}
+					{% spaceless %}{% if post.comments.count > 0 %}
+						<a class="comment-count" href="http://{{ post.author.username }}.{{ post.stream.part_of.network.domain }}{{ post.get_absolute_url }}#comments" title="{{ post.comments.count|apnumber|capfirst }} comment{{ post.comments.count|pluralize }}">
+							<span>{{ post.comments.count }}</span>
+						</a>
+					{% else %}
+						<a class="comment-count comments-0" href="http://{{ post.author.username }}.{{ post.stream.part_of.network.domain }}{{ post.get_absolute_url }}#post" title="Post a comment"></a>
+					{% endif %}{% endspaceless %}{% endif %}
+				{% endif %}
+			</span>
+		</div>
+		
+		<div class="clear"></div>
+	{% endif %}
+	
+	{% block after_body %}{% endblock %}
+</article>

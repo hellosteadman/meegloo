@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<h1>About Networks</h1>
+	<article class="page about networks">
+		<h2>The basics</h2>
+		<p>
+			A Network is a collection of streams, bound together by a specific topic. Take for example
+			a conference like Comic-Con or South by South West. They run over multiple days, and
+			there&rsquo;s always more than one thing to do at any time, whether it&rsquo;s sitting in on
+			a panel, enjoying a launch party or getting a book signed.
+		</p>
+		
+		<p>
+			For events like these, it&rsquo;s not practical to put everything into one stream, so you
+			can use Networks to create streams that live in a specific address. This could be
+			something.{{ request.network.parent.domain }}, or your own custom domain name.
+		</p>
+		
+		<h2>Creating a Network</h2>
+		<p>
+			Networks will only be available for paid accounts, but while we&rsquo;re getting those setup,
+			if you&rsquo;d like to create a Network for your next event, please email
+			<a href="mailto:hello@meegloo.com">hello@meegloo.com</a> and we can talk.
+		</p>
+	</article>
+{% endblock content %}

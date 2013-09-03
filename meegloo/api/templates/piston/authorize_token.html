@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta encoding="utf-8" />
+		<title>OAuth token</title>
+		<!--[if lt IE 9]>
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+		<h1>Authorize Token</h1>
+		<form action="{% url piston.authentication.oauth_user_auth %}" method="post">
+			{{ form.as_table }}
+			<oinput type="submit" value="Confirm" />
+		</form>
+	</body>
+</html>

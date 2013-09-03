@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+	<channel>
+		<title>{{ title_parts|join:' | ' }} | Meegloo </title>
+		<description>This is an example of an RSS feed</description>
+		<link>{{ stream.get_full_base_url }}</link>
+		<lastBuildDate>{{ posts.latest.updated|date:'r' }}</lastBuildDate>
+		<pubDate>{% now "r" %}</pubDate>
+		
+		{% for post in posts.object_list %}
+		<item>
+			<title>{{ post.text }}</title>
+			<description></description>
+			<link>http://{{ post.author.username }}.{{ post.stream.part_of.network.domain }}{{ post.get_absolute_url }}</link>
+			<guid isPermaLink="false">{{ post.pk }}</guid>
+			<pubDate>{{ post.posted|date:'r' }}</pubDate>
+		</item>
+		{% endfor %}
+	</channel>
+</rss>

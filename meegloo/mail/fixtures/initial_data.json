@@ -1,0 +1,1 @@
+[{"pk": 1, "model": "mail.mailtype", "fields": {"name": "Marketing messages", "can_unsubscribe": true}}, {"pk": 2, "model": "mail.mailtype", "fields": {"name": "Service announcements", "can_unsubscribe": false}}]

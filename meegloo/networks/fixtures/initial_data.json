@@ -1,0 +1,1 @@
+[{"pk": 1, "model": "networks.supernetwork", "fields": {"domain": "meegloo.com", "name": "Meegloo"}}, {"pk": 1, "model": "networks.network", "fields": {"domain": "meegloo.com", "managers": [], "name": "Meegloo", "parent": 1, "privacy": 1, "owner": 1}}]

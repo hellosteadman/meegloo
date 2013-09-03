@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+	<h1>Forgotten password</h1>
+	
+	<article class="page">
+		{% ifequal state 1 %}
+		<p>
+			OK, let&rsquo;s get you sorted. Just enter either your username or email address below,
+			and we&rsquo;ll send a confirmation email out to the address tied to that account.
+		</p>
+		{% endifequal %}
+		
+		{% ifequal state 2 %}
+		<p>
+			Thanks for that; better to be safe. Now just type in your new password, confirm it and
+			you&rsquo;ll be able to login with your lovely new details.
+		</p>
+		{% endifequal %}
+		
+		<form method="post" action="{% if not LOCAL %}http://{{ request.network.domain }}{% endif %}{% ifequal state 1 %}{% url forgot_password %}{% else %}{% ifequal state 2 %}{% url reset_password %}?guid={{ request.GET.guid|urlencode }}{% endifequal %}{% endifequal %}">
+			{% if form.non_field_errors %}
+				<p class="error-header">{{ form.non_field_errors|join:'<br />' }}</p>
+			{% endif %}
+			
+			{% for field in form %}
+				<div class="form-field">
+					<div class="module label">
+						<label for="id_{{ field.html_name }}">{{ field.label }}</label>
+						{% if field.errors %}
+							<br /><span class="errors">{{ field.errors }}</span>
+						{% else %}
+							<br /><span class="help-text">{{ field.help_text }}</span>
+						{% endif %}
+					</div>
+					
+					<div class="module field">
+						{{ field }}
+					</div>
+				</div>
+			{% endfor %}
+			
+			{% csrf_token %}
+			<input type="submit" class="button" value="{% trans 'Reset password' %}" />
+		</form>
+	</article>
+{% endblock %}
+
+{% block sidebar %}
+	<article class="module">
+		<h2>Having trouble?</h2>
+		<p>
+			<a href="http://getsatisfaction.com/flamingtarball/products/flamingtarball_meegloo" target="_blank">Visit our support site</a>
+		</p>
+	</article>
+	
+	{{ block.super }}
+{% endblock sidebar %}

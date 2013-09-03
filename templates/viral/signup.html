@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load i18n humanize markup %}
+
+{% block content %}
+	<article id="welcome">
+		<h1>{{ competition.headline }}</h1>
+		{{ competition.subheading|markdown }}
+		<p>{{ competition.days_remaining|apnumber|capfirst }} day{{ competition.days_remaining|pluralize }} remaining</p>
+	</article>
+	
+	<article class="page">
+		{% include 'social/sharethis.inc.html' %}
+		
+		{{ competition.body|markdown }}
+		<h2>Sign up now to be in with a chance</h2>
+		
+		<form method="post">
+			{% if form.errors %}
+				<p class="error-header">
+					Whoops! Looks like there&rsquo;s a problem or two with the details
+					you&rsquo;ve submitted. Please check over them and try again, and remember
+					to pop in your password.
+				</p>
+			{% endif %}
+			
+			{% for field in form %}
+				<div class="form-field">
+					<div class="module label">
+						<label for="id_{{ field.html_name }}">{{ field.label }}</label><br />
+						{% if field.errors %}
+							<span class="errors">{{ field.errors }}</span>
+						{% else %}
+							<span class="help-text">{{ field.help_text }}</span>
+						{% endif %}
+					</div>
+					
+					<div class="module field">
+						{{ field }}
+					</div>
+					
+					{% ifequal field.name 'username' %}
+						<div class="module extra-{{ field.name }}">
+							<div class="inner">
+								<div id="username-check">
+									<span class="label">Ready to check</span>
+								</div>
+							</div>
+						</div>
+					{% else %}
+						{% ifequal field.name 'password' %}
+							<div class="module extra-{{ field.name }}">
+								<div class="inner">
+									<div id="password-meter">
+										<span class="label">Strength</span>
+										<div class="progress"></div>
+									</div>
+								</div>
+							</div>
+						{% endifequal %}
+					{% endifequal %}
+				</div>
+			{% endfor %}
+			
+			{% csrf_token %}
+			
+			<div class="module terms">
+				<p>
+					By signing up you&rsquo;re agreeing to our
+					<a href="/terms/">site-wide terms and conditions</a>, and to the
+					terms of the competition, which you can find on this page.
+				</p>
+			</div>
+			
+			<div class="module submit">
+				<input type="submit" value="{% ifequal request.method 'POST' %}Try again{% else %}Sign me up!{% endifequal %}" />
+			</div>
+		</form>
+		
+		<div class="clear"></div>
+	</article>
+	
+	<div style="display: none;">
+		<div id="lightbox">
+			<div id="lightbox-video" class="media-player video"></div>
+		</div>
+	</div>
+{% endblock content %}
+
+{% block sidebar %}
+	{% include 'sidebar/competition.inc.html' %}
+{% endblock sidebar %}
+
+{% block javascript %}
+	<script src="{{ MEDIA_URL }}js/jwplayer/jwplayer.js"></script>
+	<script src="{{ MEDIA_URL }}js/fancybox/jquery.fancybox-1.3.4.js"></script>
+	<script src="{{ MEDIA_URL }}js/signup.js"></script>
+	
+	<script>
+		$(document).ready(
+			function() {
+				$('a#lightbox-link').fancybox(
+					{
+						type: 'inline',
+						padding: 0,
+						margin: 0,
+						overlayColor: '#000',
+						overlayOpacity: 0.7
+					}
+				);
+			}
+		);
+		
+		jwplayer('lightbox-video').setup(
+			{
+				'file': '{{ MEDIA_URL }}welcome/video.m4v',
+				'image': '{{ MEDIA_URL }}welcome/thumbnail.jpg',
+				'width': 596,
+				'height': 448,
+				'skin': '{{ MEDIA_URL }}js/jwplayer/skins/modieus.zip',
+				'provider': 'http',
+				'http.startparam': 'start',
+				'modes': [
+					{
+						'type': 'flash',
+						'src': '{{ MEDIA_URL }}js/jwplayer/player.swf'
+					},
+					{
+						'type': 'html5',
+						'config': {
+							'file': '{{ MEDIA_URL }}welcome/video.m4v',
+							'provider': 'video'
+						}
+					}
+				]
+			}
+		);
+	</script>
+	{{ block.super }}
+{% endblock javascript %}

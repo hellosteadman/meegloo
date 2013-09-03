@@ -1,0 +1,58 @@
+{% load thumbnail %}
+{% for post in posts.object_list %}
+	{% ifchanged post.sets.all.0 %}
+		{% if post.sets.all.0.posts.count > 1 and not request.is_ajax %}
+			{% include 'posts/set.inc.html' with set=post.sets.all.0 %}
+		{% else %}
+			{% include post.html_template_name %}
+		{% endif %}
+	{% endifchanged %}
+{% empty %}
+	{% if not request.is_ajax %}
+	<article class="page wait">
+		{% if post_form %}
+			<article class="mobile">
+				<h2>Grab your mobile</h2>
+				<p>
+					You can update followers via the Meegloo app, coming to an app
+					store near you very soon.
+				</p>
+			</article>
+			
+			<article class="web">
+				<h2>Start posting now</h2>
+				<p>
+					Use the form above to post your first message. Attach images, audio and
+					video really easily.
+				</p>
+			</article>
+		{% else %}
+			<article class="mobile">
+				<h2>Hold on to your mobile</h2>
+				<p>
+					You can watch events unfold through the Meegloo app, coming to an app
+					store near you very soon.
+				</p>
+			</article>
+			
+			<article class="web">
+				<h2>Don&rsquo;t look away</h2>
+				
+				<p>
+					This page will start to automatically fill with updates from this event.
+				</p>
+			</article>
+		{% endif %}
+		
+		<div class="clear"></div>
+	</article>
+	{% endif %}
+{% endfor %}
+
+{% if posts.has_previous %}
+	<noscript><a class="prev-page" href="?{% if since_id %}since={{ since_id }}&amp;{% endif %}page={{ posts.previous_page_number }}{% if iframe %}&amp;key={{ request.GET.key }}&amp;domain={{ reuqest.GET.domain|urlize }}{% endif %}">Previous</a></noscript>
+{% endif %}
+
+{% if posts.has_next %}
+	<a class="next-page" href="?page={{ posts.next_page_number }}{% if iframe %}&amp;key={{ request.GET.key }}&amp;domain={{ reuqest.GET.domain|urlize }}{% endif %}">Next page</a>
+{% endif %}

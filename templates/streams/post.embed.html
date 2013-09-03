@@ -1,0 +1,24 @@
+<DOCTYPE html>
+<html>
+	<head>
+		<style>
+			body {
+				margin: 0; padding: 0;
+			}
+		</style>
+		
+		<script src="{{ MEDIA_URL }}js/jquery.js"></script>
+		<script src="{{ MEDIA_URL }}js/jwplayer/jwplayer.js"></script>
+	</head>
+	<body>
+		<div id="post-{{ post.pk }}"></div>
+		
+		<script>
+			$(document).ready(
+				function() {
+					{% include post.js_template_name %}
+				}
+			);
+		</script>
+	</body>
+</html>

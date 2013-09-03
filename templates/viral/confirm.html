@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load i18n humanize markup %}
+
+{% block content %}
+	<article id="welcome">
+		<h1>{{ competition.headline }}</h1>
+		{{ competition.subheading|markdown }}
+		<p>{{ competition.days_remaining|apnumber|capfirst }} day{{ competition.days_remaining|pluralize }} remaining</p>
+	</article>
+	
+	<article class="page">
+		<h2>Thanks!</h2>
+		
+		<p>
+			You&rsquo;re all signed up. Now if you don&rsquo;t mind checking your inbox,
+			you should see an email from us, with a link to confirm your email address.
+		</p>
+		
+		<p>
+			Click that link then you can login to {{ request.network.domain }} with your shiny
+			new account.
+		</p>
+		
+		<h2>Get busy winning, straight away!</h2>
+		<p>
+			You can now start posting your personal link around the web, and it&rsquo;ll become active as
+			soon as you confirm your email address.
+		</p>
+	</article>
+{% endblock content %}
+
+{% block sidebar %}
+	{% include 'sidebar/competition.inc.html' %}
+{% endblock sidebar %}

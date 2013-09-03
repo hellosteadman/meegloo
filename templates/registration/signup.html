@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load i18n humanize %}
+
+{% block content %}
+	<h1>Signup to Meegloo</h1>
+	
+	<article class="page">
+		{% if request.GET.next %}
+			<p class="info-header">You need an account to do that. If you already have one, you can <a href="{% url login %}?next={{ request.GET.next|urlencode }}">login</a>.</p>
+		{% endif %}
+		
+		{% if request.GET.username %}
+			<p class="info-header">Good news! No-one&rsquo;s nabbed that username yet.</p>
+		{% endif %}
+		
+		{% include 'registration/signup.inc.html' %}
+		
+		<div class="clear"></div>
+	</article>
+{% endblock content %}
+
+{% block sidebar %}
+	<article class="module">
+		<h2>Don&rsquo;t forget your mobile!</h2>
+		
+		<p>
+			The Meegloo app will shortly be arriving to an app store near you, so you can
+			make the news wherever you are.
+		</p>
+	</article>
+	
+	{{ block.super }}
+{% endblock sidebar %}
+
+{% block javascript %}
+	<script src="{{ MEDIA_URL }}js/signup.js"></script>
+	{{ block.super }}
+{% endblock javascript %}

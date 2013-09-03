@@ -1,0 +1,16 @@
+{% if is_authenticated %}
+	<form action="{% url answer_question question.content_type.app_label question.content_type.model question.object_id %}" method="post">
+		<textarea name="answer" placeholder="Type in your answer and press Return"></textarea>
+		{% if api %}
+		<input type="submit" value="Post answer" />
+		{% endif %}
+		
+		{% csrf_token %}
+	</form>
+{% else %}
+	<p class="invite">
+		If you&rsquo;d like to post an answer, please
+		<a href="{% url login %}">login</a> or
+		<a href="{% url register %}">sign up</a>.
+	</p>
+{% endif %}

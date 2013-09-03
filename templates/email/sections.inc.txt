@@ -1,0 +1,7 @@
+{{ header }}
+{% for section in sections %}
+{{ section.title|upper }}
+{% for i in section.title %}-{% endfor %}
+{{ section.body }}
+
+{% endfor %}{{ footer }}

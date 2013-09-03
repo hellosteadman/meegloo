@@ -1,0 +1,50 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_modify adminmedia humanize %}
+{% load url from future %}
+
+{% block extrahead %}{{ block.super }}
+	{% url 'admin:jsi18n' as jsi18nurl %}
+	<script type="text/javascript" src="{{ jsi18nurl|default:"../../../jsi18n/" }}"></script>
+	{{ media }}
+{% endblock %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />{% endblock %}
+{% block coltype %}{% if ordered_objects %}colMS{% else %}colM{% endif %}{% endblock %}
+{% block bodyclass %}{{ opts.app_label }}-{{ opts.object_name.lower }} change-form{% endblock %}
+{% block breadcrumbs %}{% if not is_popup %}
+	<div class="breadcrumbs">
+		<a href="../../../../">{% trans "Home" %}</a> &rsaquo;
+		<a href="../../../">{{ app_label|capfirst|escape }}</a> &rsaquo;
+		<a href="../../">{{ opts.verbose_name_plural|capfirst }}</a> &rsaquo;
+		<a href="../">{{ original|truncatewords:"18" }}</a> &rsaquo;
+		{% trans 'Send message' %}
+	</div>
+{% endif %}{% endblock %}
+
+{% block content %}
+	<div id="content-main">
+		{% block object-tools %}
+			{% if not is_popup %}
+				<ul class="object-tools">
+				  {% block object-tools-items %}
+				  <li><a href="../history/" class="historylink">{% trans "History" %}</a></li>
+				  {% endblock %}
+				</ul>
+			{% endif %}
+		{% endblock %}
+		
+		<form action="{{ form_url }}" method="post" id="{{ opts.module_name }}_form">{% csrf_token %}{% block form_top %}{% endblock %}
+			<div>
+				<p>
+					<label><input type="radio" name="test" value="1"{% if test %} checked="checked"{% endif %} /> Send to my email address (<strong>{{ request.user.email }}</strong>) for testing</label>
+					<br />
+					<label><input type="radio" name="test" value="0"{% if not test %} checked="checked"{% endif %} /> Send to the <strong>{{ recipients.count|apnumber }} recipient{{ recipients.count|pluralize }}</strong> on the list</label>
+				</p>
+				
+				<div class="submit-row" {% if is_popup %}style="overflow: auto;"{% endif %}>
+					<input type="submit" value="{% trans 'Send' %}" class="default" name="_send" />
+				</div>
+			</div>
+		</form>
+	</div>
+{% endblock %}

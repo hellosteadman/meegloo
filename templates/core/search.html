@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load highlight %}
+
+{% block content %}
+	<h1>Search {{ request.network.domain }}</h1>
+	
+	<article class="page search">
+		<form method="get" action=".">
+			{{ form.q }}
+			{{ form.models }}
+			<div class="clear"></div>
+		</form>
+		
+		{% if query %}
+			<h2>Results</h2>
+			
+			{% for result in page.object_list %}
+				{% ifequal result.model_name 'post' %}
+					{% include result.object.html_template_name with post=result.object search='True' %}
+				{% else %}
+					{% ifequal result.model_name 'network' %}
+						<article class="post network-post">
+							<h3><a href="http://{{ result.domain }}">{{ result.name }}</a></h3>
+							{{ result.text }}
+						</article>
+					{% endifequal %}
+				{% endifequal %}
+			{% empty %}
+				<p>Sorry, nothing could be found for <span class="highlighted">{{ query }}</span>.</p>
+				
+				{% if suggestion and suggestion.strip %}
+					<p class="suggestion">
+						Did you mean
+						<a href="?q={{ suggestion.strip|urlencode }}">{{ suggestion }}</a>?
+					</p>
+				{% endif %}
+			{% endfor %}
+			
+			{% if page.has_previous %}
+				<a class="prev-page no-ajax" href="?q={{ query }}&amp;page={{ page.previous_page_number }}">Previous page</a>
+			{% endif %}
+			
+			{% if page.has_next %}
+				<a class="next-page no-ajax" href="?q={{ query }}&amp;page={{ page.next_page_number }}">Next page</a>
+			{% endif %}
+		{% else %}
+			{# Show some example queries to run, maybe query syntax, something else? #}
+		{% endif %}
+	</article>
+{% endblock %}
+
+{% block javascript %}
+	{{ block.super }}
+	
+	<script src="{{ MEDIA_URL }}js/jwplayer/jwplayer.js"></script>
+	<script src="{{ MEDIA_URL }}js/stream.js"></script>
+	
+	<script>
+		$(document).ready(
+			function() {
+				{% for result in page.object_list %}
+					{% ifequal result.model_name 'post' %}
+						{% include result.object.js_template_name with post=result.object %}
+					{% endifequal %}
+				{% endfor %}
+			}
+		);
+	</script>
+{% endblock %}

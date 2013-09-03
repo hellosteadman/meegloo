@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load i18n markup humanize thumbnail %}
+
+{% block content %}
+	{% block headline %}
+		<h1>{{ request.network.parent.name }} networks</h1>
+	{% endblock %}
+	
+	<article class="page">
+		<article class="module explore-networks">
+			<h2>There&rsquo;s more to explore</h2>
+			<p>
+				Networks are a way of setting up lots of streams around a single event, or major topic.
+			</p>
+			
+			{% for network in networks %}
+				<a class="network" href="http://{{ network.domain }}"{% thumbnail network.icon '60x60' crop='center' as thumb %} style="background-image: url('{{ thumb.url }}');"{% endthumbnail %}>
+					<h3>{{ network.name }}</h3>
+					
+					{% if network.description %}{{ network.description|markdown }}{% endif %}
+					
+					<p class="network-meta">
+						{{ network.streams.count|apnumber|capfirst }} stream{{ network.streams.count|pluralize }} so far
+					</p>
+				</a>
+			{% endfor %}
+		</article>
+		
+		<div class="clear"></div>
+	</article>
+{% endblock content %}
+
+{% block sidebar %}
+	<article class="module create">
+		<h2>Want to setup your own network?</h2>
+		<p>While Networks are still in beta, you can email <a href="mailto:hello@meegloo.com">hello@meegloo.com</a>, tell us about yourself and we&rsquo;ll see what we can setup.</p>
+	</article>
+	
+	{{ block.super }}
+{% endblock sidebar %}

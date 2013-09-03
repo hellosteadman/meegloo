@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<h1>Follow your {{ site.VERBOSE_NAME }} friends</h1>
+	<article class="page">
+		<form>
+			<p>Just fetching your list of {{ site.VERBOSE_NAME }} friends now…</p>
+		</form>
+	</article>
+{% endblock content %}
+
+{% block sidebar %}
+	{% ifequal site_key 'facebook' %}
+		<article class="module fb-connect">
+			<div id="fb-root"></div>
+			
+			<p>
+				You can bring along your friends from {{ site.VERBOSE_NAME }} who aren&rsquo;t on
+				{{ request.network.parent.name }} really easily.
+			</p>
+			
+			<p>
+				<a class="button" id="fb-invite" href="javascript:;">Invite my friends</a>
+			</p>
+		</article>
+	{% else %}
+		{{ block.super }}
+	{% endifequal %}
+{% endblock %}
+
+{% block javascript %}
+	<script>var CONNECT_URL = '{% url oauth_connect_json site_key %}';</script>
+	<script src="{{ MEDIA_URL }}js/connect.js"></script>
+	
+	{% ifequal site_key 'facebook' %}
+	<script src="http://connect.facebook.net/en_US/all.js"></script>
+    <script>
+    	FB.init(
+    		{
+	    		appId: '{{ site.CONSUMER_KEY }}',
+	    		status: true,
+	    		cookie: true,
+    			oauth: true
+    		}
+    	);
+    	
+    	$(document).ready(
+    		function() {
+    			$('#fb-invite').bind('click',
+    				function(e) {
+    					e.preventDefault();
+    					
+    					FB.ui(
+    						{
+    							method: 'apprequests',
+    							message: 'I\'m using Meegloo to share stories from the events I\'m close to. It\'s a free app, available for iPhone, iPad and Android.'
+    						},
+    						function requestCallback(r) {
+    							if(r) {
+    								alert('Thanks a lot for taking the time to invite your friends to Meegloo');
+    							}
+    						}
+    					);
+    				}
+    			);
+    		}
+    	);
+    </script>
+    {% endifequal %}
+{% endblock javascript %}

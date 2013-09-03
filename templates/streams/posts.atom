@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<title>{{ title_parts|join:' | ' }} | Meegloo </title>
+	<link href="{{ stream.get_full_base_url }}" />
+	{% with posts.latest.updated as updated %}
+	<updated>{{ updated|date:'Y-m-d' }}T{{ updated|date:'H:i:s' }}Z</updated>
+	{% endwith %}
+	<author>
+		<name>Meegloo</name>
+		<email>hello@meegloo.com</email>
+	</author>
+	
+	{% for post in posts.object_list %}
+	<entry>
+		<title>{{ post.text }}</title>
+		<link href="http://{{ post.author.username }}.{{ post.stream.part_of.network.domain }}{{ post.get_absolute_url }}" />
+		<id>{{ post.pk }}</id>
+		<updated>{{ post.posted|date:'Y-m-d' }}T{{ post.posted|date:'H:i:s' }}Z</updated>
+	</entry>
+	{% endfor %}
+</feed>

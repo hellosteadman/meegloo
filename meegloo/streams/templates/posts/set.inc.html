@@ -1,0 +1,22 @@
+{% load humanize %}
+<section class="{% if nojq %}meegloo-{% endif %}set {{ set.kind }}-set" id="set-{{ set.pk }}" data-id="{{ set.pk }}">
+	{% for post in set.posts.public.live %}
+		{% include post.html_template_name with set=set %}
+	{% endfor %}
+	
+	<div class="{% if nojq %}meegloo-{% endif %}post-meta"{% if nojq %} style="font-size: 10px;"{% endif %}>
+		<span>
+			Posted {% include 'posts/posted.inc.html' with date=set.posts.latest.posted obj=set %}
+			by <a href="http://{{ set.author.username }}.{{ request.network.domain }}">{{ post.author }}</a>{% if not single %}
+			{% spaceless %}{% if set.comments.count > 0 %}
+				<a class="comment-count" href="http://{{ set.stream.profile.username }}.{{ request.network.domain }}{{ set.get_absolute_url }}#comments" title="{{ set.comments.count|apnumber|capfirst }} comment{{ set.comments.count|pluralize }}">
+					<span>{{ set.comments.count }}</span>
+				</a>
+			{% else %}
+				<a class="comment-count comments-0" href="http://{{ set.stream.profile.username }}.{{ request.network.domain }}{{ set.get_absolute_url }}#post" title="Post a comment"></a>
+			{% endif %}{% endspaceless %}{% endif %}
+		</span>
+	</div>
+	
+	<div class="clear"></div>
+</section>

@@ -1,0 +1,27 @@
+{% extends 'streams/posts.html' %}
+{% load humanize %}
+
+{% block headline-auth %}
+	<h1>{% spaceless %}
+		{% if stream %}
+			<a href="http://{{ request.profile }}.{{ request.network.domain }}{{ stream.get_absolute_url }}">{{ stream }}</a>
+			<span class="quiet">&nbsp;{% spaceless %}
+				Covered by {{ request.profile.get_full_name|default:request.profile.username }}
+				{% if stream.part_of.contributors.count > 1 %}
+				and {{ stream.part_of.contributors.count|add:'-1'|apnumber }} other{{ stream.part_of.contributors.count|add:'-1'|pluralize:'s' }}
+				{% endif %}
+			{% endspaceless %}</span>
+		{% else %}
+			{{ request.profile.get_full_name|default:request.profile.username }}&rsquo;s Headlines
+		{% endif %}
+	{% endspaceless %}</h1>
+{% endblock headline-auth %}
+
+{% block intro-anon %}
+	{{ request.profile.first_name|default:request.profile.username }}
+	{% if stream.part_of.contributors.count > 1 %}
+	and {{ stream.part_of.contributors.count|add:'-1'|apnumber }} other{{ stream.part_of.contributors.count|add:'-1'|pluralize:',s' }} are
+	{% else %}
+	is
+	{% endif %}
+{% endblock intro-anon %}

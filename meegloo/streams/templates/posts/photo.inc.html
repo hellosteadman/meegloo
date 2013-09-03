@@ -1,0 +1,42 @@
+{% extends 'posts/base.inc.html' %}
+{% load thumbnail %}
+
+{% block post_content %}
+	{% if set or nometa %}
+		{% thumbnail post.media.image.content '120x120' crop='center' as thumb %}
+			<a href="http://{{ post.author.username }}.{{ request.network.domain }}{{ post.get_absolute_url }}"><img src="{{ thumb.url }}" alt="{{ post.text }}" /></a>
+		{% endthumbnail %}
+	{% else %}
+		{% if nojq %}
+			{% thumbnail post.media.image.content '320x213' crop='center' as thumb %}
+				<img class="set-thumbnail" src="{{ thumb.url }}" alt="{{ post.text }}" />
+			{% endthumbnail %}
+		{% else %}
+			{% if api %}
+				{% ifequal request.GET.platform 'ipad' %}
+					{% thumbnail post.media.image.content '580x580' crop='center' as thumb %}
+						<img class="set-thumbnail" src="{{ thumb.url }}" alt="{{ post.text }}" />
+					{% endthumbnail %}
+				{% else %}
+					{% thumbnail post.media.image.content '260x260' crop='center' as thumb %}
+						<img class="set-thumbnail" src="{{ thumb.url }}" alt="{{ post.text }}" />
+					{% endthumbnail %}
+				{% endifequal %}
+			{% else %}
+				{% thumbnail post.media.image.content '480x320' crop='center' as thumb %}
+					<img class="set-thumbnail" src="{{ thumb.url }}" alt="{{ post.text }}" />
+				{% endthumbnail %}
+			{% endif %}
+		{% endif %}
+		
+		<p{% if nojq %} class="meegloo-post-title"{% endif %}>{% if not api %}<a href="http://{{ post.author.username }}.{{ request.network.domain }}{{ post.get_absolute_url }}">{% endif %}{{ post.text }}{% if not api %}</a>{% endif %}</p>
+	{% endif %}
+	
+	{% if single and post.sets.all.0.posts.count > 1 %}
+		{% for other in post.sets.all.0.posts.all %}
+			{% thumbnail other.media.image.content '60x60' crop='center' as thumb %}
+				<a href="{{ other.get_absolute_url }}"><img src="{{ thumb.url }}" alt="{{ other.text }}" /></a>
+			{% endthumbnail %}
+		{% endfor %}
+	{% endif %}
+{% endblock post_content %}

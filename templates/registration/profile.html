@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load i18n humanize %}
+
+{% block content %}
+	<h1>{{ request.profile.get_full_name|default:request.profile.username }}</h1>
+	
+	<article class="page">
+		<nav class="follow">
+			<span>Follow {{ request.profile.first_name|default:request.profile.username }}</span>
+			{% for token in request.profile.oauth_tokens.with_usernames %}
+			<a href="{{ token.get_user_url }}" target="_blank" title="{{ token.site|capfirst }}"><img src="{{ MEDIA_URL }}img/social/{{ token.site }}.png" alt="{{ token.site|capfirst }}" /></a>
+			{% endfor %}
+		</nav>
+	</article>
+	
+	<section class="posts">
+		{% include 'posts.inc.html' %}
+	</section>
+{% endblock content %}
+
+{% block sidebar %}
+	<section class="clear module">
+		<h2>{{ request.profile.first_name|default:request.profile.username }}&rsquo;s Streams</h2>
+		<ul>
+			{% for stream in request.profile.streams.public|slice:':5' %}
+				<li><a href="{{ stream.get_absolute_url }}">{{ stream.part_of.name }}</a></li>
+			{% endfor %}
+		</ul>
+	</section>
+	
+	{{ block.super }}
+{% endblock sidebar %}

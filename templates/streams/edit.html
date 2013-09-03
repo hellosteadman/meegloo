@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% load i18n markup %}
+
+{% block content %}
+	{% block headline %}
+		<h1>{{ stream.part_of.name }}</h1>
+	{% endblock %}
+	
+	<article class="page">
+		{% if not form.errors %}
+			<p>
+				You can make a few basic changes to your stream here.
+			</p>
+		{% endif %}
+		
+		<form action="{{ request.path }}{% if request.META.QUERY_STRING %}?{{ request.META.QUERY_STRING }}{% endif %}" method="post">
+			{% if form.errors %}
+				<p>Whoops! Sorry, it looks like something&rsquo;s not quite right.</p>
+				
+				{% if form.non_field_errors %}
+					<p class="error-header">{{ form.non_field_errors|join:'<br />' }}</p>
+				{% endif %}
+			{% else %}
+				{% if stream.part_of.contributors.count > 1 %}
+					<p class="info-header">
+						Because other people are part of this stream, it&rsquo;s not possible to
+						change the name, URL or description.
+					</p>
+				{% endif %}
+			{% endif %}
+			
+			{% for field in form %}
+				{% ifequal field.name 'twitter_hashtag' %}
+					<p>Changes you make here won&rsquo;t affect other contributors to the stream.</p>
+				{% endifequal %}
+				
+				<div class="form-field">
+					<div class="module label">
+						<label for="id_{{ field.html_name }}">{{ field.label }}</label><br />
+						{% if field.errors %}
+							<span class="errors">{{ field.errors }}</span>
+						{% else %}
+							<span class="help-text">{{ field.help_text }}</span>
+						{% endif %}
+					</div>
+					
+					<div class="module field">
+						{{ field }}
+					</div>
+				</div>
+			{% endfor %}
+			
+			{% csrf_token %}
+			
+			<div class="module leave">
+				<a class="button" href="{% url leave_stream stream.part_of.slug %}">Leave this stream</a>
+			</div>
+			
+			<div class="module submit">
+				<input type="submit" value="{% ifequal request.method 'POST' %}Try again{% else %}Update my stream!{% endifequal %}" />
+			</div>
+			
+			<div class="clear"></div>
+		</form>
+	</article>
+{% endblock content %}
+
+{% block sidebar %}
+	{% include 'streams/sidebar.inc.html' %}
+{% endblock sidebar %}
+
+{% block javascript %}
+	{{ block.super }}
+	<script>
+		$(document).ready(
+			function() {
+				$('#id_name').bind('keypress',
+					function(e) {
+						setTimeout(
+							function() {
+								$('#id_slug').val(
+									URLify($('#id_name').val())
+								);
+							},
+							10
+						)
+					}
+				);
+				
+				$('#id_name').bind('change',
+					function(e) {
+						$('#id_slug').val(
+							URLify($(this).val())
+						);
+					}
+				);
+				
+				$('#id_slug').bind('change',
+					function(e) {
+						$(this).val(
+							URLify($(this).val())
+						);
+					}
+				);
+				
+				$('#id_slug').bind('blur',
+					function(e) {
+						if($(this).val()) {
+							$('#id_twitter_hashtag').val('#' + $(this).val());
+							$('#id_flickr_tag').val($(this).val());
+						} else {
+							$('#id_twitter_hashtag').val('');
+							$('#id_flickr_tag').val('');
+						}
+					}
+				);
+				
+				$(window).hashchange(
+					function() {
+						if(window.location.hash == '#continue') {
+							$('.stream-list').slideUp(
+								function() {
+									$('form').slideDown();
+									$('form #id_slug').focus();
+								}
+							);
+						}
+					}
+				);
+				
+				if(window.location.hash == '#continue') {
+					$('.stream-list').slideUp(
+						function() {
+							$('form').slideDown();
+							$('form #id_slug').focus();
+						}
+					);
+				}
+			}
+		);
+	</script>
+{% endblock javascript %}

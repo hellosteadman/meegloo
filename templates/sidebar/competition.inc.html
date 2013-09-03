@@ -1,0 +1,46 @@
+{% load markup %}
+<article class="module competition">
+	{% if entry %}
+		{% if competition %}
+			<h2>Share to win!</h2>
+		{% else %}
+			<h2>{{ entry.competition.headline }}</h2>
+		{% endif %}
+		
+		<p>The best way to win the race is to get as many people to <strong>sign up via your link</strong> as possible.</p>
+		<pre>http://{{ request.network.domain }}{% url competition_register_subentrant entry.guid %}</pre>
+		<p>Select the address above and copy it into a tweet, blog post, Facebook update or anything else you can think of.</p>
+		<p>And remember, the more you <strong>recruit</strong> and the more you <strong>post</strong>, the greater your chances of <strong>winning</strong>!</p>
+		
+		<p class="reminder">
+			One last thing: the link won&rsquo;t work for you as you&rsquo;ve already signed up. But if you want to test
+			it out, <a href="{% url logout %}">log out of {{ request.network.parent.name }}</a> then try it
+			again.
+		</p>
+	{% else %}
+		<h2>How it works</h2>
+		<ul>
+			<li><strong>Sign up</strong> to {{ request.network.parent.name }}</li>
+			<li>Grab your <strong>personal link</strong></li>
+			<li>Start <strong>posting it</strong> to Twitter, Facebook or on your blog</li>
+		</ul>
+		
+		<p>
+			You get points when you <strong>sign people up</strong>, and when you
+			<strong>post to {{ request.network.parent.name }}</strong>. And you even get <strong>kickbacks</strong>
+			when the people you&rsquo;ve recruited do the same, so the sooner you sign up,
+			the greater your chances of <strong>winning</strong>!
+		</p>
+		
+		{% if request.user.is_anonymous %}
+			<h2>Not sure what {{ request.network.parent.name }} is all about?</h2>
+			<p>Why not <a id="lightbox-link" href="#lightbox">take a quick tour</a>?</p>
+		{% endif %}
+	{% endif %}
+	
+	{% if competition.terms %}
+		<h2>Competition terms</h2>
+		
+		{{ competition.terms|markdown }}
+	{% endif %}
+</article>

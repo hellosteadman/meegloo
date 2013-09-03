@@ -1,0 +1,7 @@
+Hi {{ request.user.first_name|default:request.user.username }}.  
+You're receiving this email because you've requested to have your password reset.
+
+If you haven't requested this, don't worry; you don't need to do anything but delete this email.
+
+To reset your password, just follow the link below.  
+http://{{ network.parent.domain }}{{ request.get_absolute_url }}

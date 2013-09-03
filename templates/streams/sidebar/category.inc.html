@@ -1,0 +1,8 @@
+<section class="clear module">
+	<h2>Related streams</h2>
+	<ul>
+		{% for stream in related_streams|slice:':5' %}
+			<li><a href="{{ stream.get_base_url }}">{{ stream.name }}</a></li>
+		{% endfor %}
+	</ul>
+</section>

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load markup %}
+
+{% block content %}
+	<h1>Meegloo API</h1>
+	
+	{% for doc in docs %}
+	<article class="page">
+		<h2>{{ doc.name|cut:"Handler" }}</h2>
+		
+		{% if doc.doc %}{{ doc.doc|restructuredtext }}{% endif %}
+		
+		<p>
+			URL: <b>{{ doc.get_resource_uri_template }}</b>
+		</p>
+		
+		<p>
+			Accepted methods: {% for meth in doc.allowed_methods %}<code>{{ meth }}</code>{% if not forloop.last %}, {% endif %}{% endfor %}
+		</p>
+		
+		<article class="api-handler">
+			{% for method in doc.get_all_methods %}
+				<h3>
+					<code>{{ method.name }}({{ method.signature }})</code>
+					{% if method.stale %} <em>- inherited</em>{% endif %}
+				</h3>				
+									
+				{% if method.doc %}
+					{{ method.doc|default:""|restructuredtext }}
+				{% endif %}
+			{% endfor %}
+		</article>
+	</article>
+	{% endfor %}
+{% endblock content %}

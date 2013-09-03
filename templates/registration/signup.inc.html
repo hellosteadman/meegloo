@@ -1,0 +1,60 @@
+<form action="{% url register %}" method="post">
+	{% if form.errors %}
+		<p class="error-header">
+			Whoops! Looks like there&rsquo;s a problem or two with the details
+			you&rsquo;ve submitted. Please check over them and try again, and remember
+			to pop in your password.
+		</p>
+	{% endif %}
+	
+	{% for field in form %}
+		<div class="form-field">
+			<div class="module label">
+				<label for="id_{{ field.html_name }}">{{ field.label }}</label><br />
+				{% if field.errors %}
+					<span class="errors">{{ field.errors }}</span>
+				{% else %}
+					<span class="help-text">{{ field.help_text }}</span>
+				{% endif %}
+			</div>
+			
+			<div class="module field">
+				{{ field }}
+			</div>
+			
+			{% ifequal field.name 'username' %}
+				<div class="module extra-{{ field.name }}">
+					<div class="inner">
+						<div id="username-check">
+							<span class="label">Ready to check</span>
+						</div>
+					</div>
+				</div>
+			{% else %}
+				{% ifequal field.name 'password' %}
+					<div class="module extra-{{ field.name }}">
+						<div class="inner">
+							<div id="password-meter">
+								<span class="label">Strength</span>
+								<div class="progress"></div>
+							</div>
+						</div>
+					</div>
+				{% endifequal %}
+			{% endifequal %}
+		</div>
+	{% endfor %}
+	
+	{% csrf_token %}
+	
+	<div class="module terms">
+		<p>
+			By signing up you&rsquo;re agreeing to our
+			<a href="/terms/">terms and conditions</a>, yadda yadda.
+		</p>
+	</div>
+	
+	<div class="module submit">
+		<input type="submit" value="{% ifequal request.method 'POST' %}Try again{% else %}Sign me up!{% endifequal %}" />
+	</div>
+</form>

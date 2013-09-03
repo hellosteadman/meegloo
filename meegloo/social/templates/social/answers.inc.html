@@ -1,0 +1,32 @@
+{% load humanize markup gravatar questions %}
+
+{% if question.poll %}
+	{% if question.answers.count > 0 %}
+		<table>
+			{% for option in question.poll.options.all %}
+				<tr>
+					<td class="label">{{ option.label }}</td>
+					<td class="count">{{ option.answers.count }}</td>
+					<td class="percent">
+						<span class="bar-container">
+							<span class="bar" style="width: {{ option.answers.count|percentof:question.poll.answers.count }}%"></span>
+							<span class="percent">{{ option.answers.count|percentof:question.poll.answers.count|stringformat:'d' }}%</span>
+						</span>
+					</td>
+				</tr>
+			{% endfor %}
+		</table>
+	{% endif %}
+{% else %}
+	<p>{{ question.answers.count|apnumber|capfirst }} response{{ question.answers.count|pluralize }}</p>
+	{% for answer in question.answers.all %}
+		<article class="post answer-post" style="background-image: url('{{ answer.user.email|gravatar:32 }}');">
+			{{ answer.text|markdown }}
+			
+			<p class="post-meta">
+				Posted {{ answer.answered|timesince }} ago by
+				{{ answer.user.get_full_name|default:answer.user.username }}
+			</p>
+		</article>
+	{% endfor %}
+{% endif %}

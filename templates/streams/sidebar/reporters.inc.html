@@ -1,0 +1,12 @@
+{% load gravatar %}
+
+<article class="clear module reporters">
+	<h2>Who&rsquo;s reporting on this story</h2>
+	<ul>
+	{% for reporter in reporters %}
+		<li>
+			<a href="http://{{ reporter.username }}.{{ request.network.domain }}{{ stream.get_absolute_url }}"><img src="{{ reporter.email|gravatar:50 }}" title="{{ reporter.get_full_name|default:reporter.username }}" /></a>
+		</li>
+	{% endfor %}
+	</ul>
+</article>

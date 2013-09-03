@@ -1,0 +1,10 @@
+<form id="post" method="post" action="{% url post_comment content_type.app_label content_type.model obj.pk %}">
+	<div class="form-field">{{ form.text }}</div>
+	
+	<label>{{ form.tweet }} {{ form.tweet.label }}</label>
+	{{ form.posted }}
+	<input type="submit" value="Post comment" />
+	
+	<div class="clear"></div>
+	{% csrf_token %}
+</form>

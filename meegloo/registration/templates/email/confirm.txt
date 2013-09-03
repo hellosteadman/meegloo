@@ -1,0 +1,5 @@
+Hi {{ confirmation.user.first_name|default:confirmation.user.username }}.  
+Thanks so much for signing up to {{ network.parent.name }}.
+
+Please confirm your email address by following the link below.  
+http://{{ network.parent.domain }}{{ confirmation.get_absolute_url }}

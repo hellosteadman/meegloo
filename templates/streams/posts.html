@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load i18n humanize %}
+
+{% block extra_head %}
+	{{ block.super }}
+	{% if post_form %}
+	<link rel="stylesheet" media="screen" href="{{ MEDIA_URL }}js/uploadify/uploadify.css" />
+	{% endif %}
+	<link rel="alternate" type="application/atom+xml" title="Subscribe to posts in your feed reader" href="feed.atom" />
+{% endblock extra_head %}
+
+{% block content %}
+	{% if request.user.is_authenticated %}
+		{% block headline-auth %}
+			<h1>{% spaceless %}
+				{% if stream %}
+					<a href="http://{{ request.network.domain }}{{ stream.get_absolute_url }}">{{ stream }}</a>
+					<span class="quiet">&nbsp;{% spaceless %}
+						{% if stream.part_of.contributors.count > 1 %}
+							Covered by {{ stream.part_of.contributors.count|apnumber }} people
+						{% else %}
+							{% with stream.latest_post as latest_post %}{% if latest_post %}
+								Covered by 
+								<a href="http://{{ latest_post.author.username }}.{{ request.network.domain }}/">{{ latest_post.author.get_full_name|default:latest_post.author.username }}</a>
+							{% endif %}{% endwith %}
+						{% endif %}
+					{% endspaceless %}</span>
+				{% else %}
+					{% trans 'Latest headlines' %}
+				{% endif %}
+			{% endspaceless %}</h1>
+		{% endblock headline-auth %}
+	{% else %}
+		<article id="welcome">
+			<p class="first">{% spaceless %}
+				{% block intro-anon %}
+					{{ stream.contributors.count|apnumber|capfirst }}
+					pe{{ stream.contributors.count|pluralize:'rson is,ople are' }}
+				{% endblock intro-anon %}
+				using Meegloo to share words and pictures
+				about {{ stream|default:'the topics that matter to them' }}, and you can too! Why not
+				<a href="http://{{ request.network.parent.domain }}{% url register %}">sign up now</a> or
+				<a href="http://{{ request.network.parent.domain }}{% url about %}">find out more</a>?
+			{% endspaceless %}</p>
+			
+			<p>{% spaceless %}
+				Meegloo is a free web and mobile app that lets you cover the events and
+				topics close to your heart. It&rsquo;s available for
+				<a href="http://itunes.apple.com/app/meegloo/id477040469" target="_blank">iOS</a> and
+				<a href="https://market.android.com/details?id=com.flamingtarball.mobile.meegloo" target="_blank">Android</a> now,
+				and there&rsquo;s loads more info on
+				<a href="http://blog.meegloo.com" target="_blank">our blog</a>.
+			{% endspaceless %}</p>
+			
+			<div class="clear"></div>
+		</article>
+	{% endif %}
+	
+	{% if post_form %}
+		{% include 'streams/form.inc.html' %}
+	{% endif %}
+	
+	<!-- {% if stream and posts.count > 0 %}
+			<nav>
+				{% if not selected_post_type %}
+					<a>All types</a>
+				{% else %}
+					<a href="{% url stream stream=stream.part_of.slug|default:stream.slug %}">All types</a>
+				{% endif %}
+				
+				{% for type in post_types %}
+					|
+					{% ifequal selected_post_type type %}
+						<a>{{ type|capfirst }}</a>
+					{% else %}
+						<a href="{% url stream_by_type stream=stream.part_of.slug|default:stream.slug kind=type %}">{{ type|capfirst }}</a>
+					{% endifequal %}
+				{% endfor %}
+			</nav>
+			
+			<div class="clear"></div>
+		{% endif %} -->
+	
+	<section class="page">
+		{% include 'social/sharethis.inc.html' %}
+	</section>
+	
+	<section class="posts">
+		{% include 'posts.inc.html' %}
+	</section>
+	
+	{% if post_form %}
+		<div style="display: none">
+			<div id="poll-popup">
+				<h2>Creating a poll</h2>
+				
+				<p>Put the title of your poll on the first line, and end it with a quesiton mark.</p>
+				<p>On the next lines, create a numbered list, with each option on a new line, like this:</p>
+				
+				<p class="example">
+					How have you found the wifi at this venue?<br />
+					1. Excellent<br />
+					2. OK<br />
+					3. Poor<br />
+					4. What's wifi? I'm all about 3G!
+				</p>
+				
+				<p>Press the Return key again to post your poll.</p>
+				<p>Your followers will then be able to answer your poll by clicking one of those options.</p>
+			</div>
+		</div>
+	{% endif %}
+{% endblock content %}
+
+{% block sidebar %}
+	{% include 'streams/sidebar.inc.html' %}
+{% endblock sidebar %}
+
+{% block javascript %}
+	{{ block.super }}
+	<script src="{{ MEDIA_URL }}js/jwplayer/jwplayer.js"></script>
+	<script src="{{ MEDIA_URL }}js/stream.js"></script>
+	
+	<script>
+		{% if latest_id %}var latest_id = {{ latest_id }};{% endif %}
+		$(document).ready(
+			function() {
+				{% for post in posts.object_list %}
+					{% include post.js_template_name %}
+				{% endfor %}
+				
+				{% if latest_id or not request.is_ajax %}
+				{% if not latest_id %}latest_id = 0;{% endif %}
+				checkTimeout = setTimeout(checkLatest, 3000);
+				{% endif %}
+				
+				$('.question-hint a').fancybox(
+					{
+						overlayColor: '#000',
+						overlayOpacity: 0.7
+					}
+				);
+			}
+		);
+	</script>
+	
+	{% if post_form %}
+	<script src="{{ UPLOADIFY_URL }}jquery.uploadify.v2.1.4.min.js"></script>
+	<script src="{{ MEDIA_URL }}js/post.js"></script>
+	<script src="{{ MEDIA_URL }}js/jquery.geolocation.js"></script>
+	<script src="{{ MEDIA_URL }}js/fancybox/jquery.fancybox-1.3.4.js"></script>
+	{% endif %}
+{% endblock javascript %}

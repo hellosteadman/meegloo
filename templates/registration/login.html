@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+	<h1>Login to Meegloo</h1>
+	
+	<article class="page">
+		<form method="post" action="{% if not LOCAL %}http://{{ request.network.domain }}{% endif %}{% url login %}">
+			{% if request.GET.next %}
+				<p class="info-header">You need to be logged in to do that</p>
+			{% endif %}
+			
+			{% if form.non_field_errors %}
+				<p class="error-header">{{ form.non_field_errors|join:'<br />' }}</p>
+			{% endif %}
+			
+			{% for field in form %}
+				<div class="form-field">
+					<div class="module label">
+						<label for="id_{{ field.html_name }}">{{ field.label }}</label>
+					</div>
+					
+					<div class="module field">
+						{{ field }}
+					</div>
+				</div>
+			{% endfor %}
+			
+			{% csrf_token %}
+			<input type="submit" class="button" value="{% trans 'Login' %}" />
+			<input type="hidden" class="next" value="{{ next }}" />
+			&nbsp;
+			<a href="{% url forgot_password %}">Forgotten your password?</a>
+		</form>
+	</article>
+{% endblock %}
+
+{% block sidebar %}
+	<article class="module">
+		<h2>Don&rsquo;t have an account?</h2>
+		<p><a href="http://meegloo.com{% url register %}">Sign up for a free Meegloo account now</a>!</p>
+	</article>
+	
+	{{ block.super }}
+{% endblock sidebar %}

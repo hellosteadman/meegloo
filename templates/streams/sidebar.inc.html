@@ -1,0 +1,37 @@
+{% if post_form %}
+	{% include 'streams/sidebar/edit.inc.html' %}
+{% else %}
+	{% if request.user.is_authenticated and stream %}
+		{% include 'streams/sidebar/join.inc.html' %}
+	{% endif %}
+{% endif %}
+
+{% if stream.description or stream.part_of.description %}
+	{% include 'streams/sidebar/description.inc.html' %}
+{% endif %}
+
+{% if stream_tags.twitter__com %}
+	{% include 'streams/sidebar/twitter.inc.html' %}
+{% endif %}
+
+{% if stream_tags.flickr__com %}
+	{% include 'streams/sidebar/flickr.inc.html' %}
+{% endif %}
+
+{% if other_streams %}
+	{% include 'streams/sidebar/other.inc.html' %}
+{% endif %}
+
+{% if related_streams %}
+	{% include 'streams/sidebar/category.inc.html' %}
+{% endif %}
+
+{% if request.profile and request.profile.oauth_tokens.with_usernames.count > 0 %}
+	{% include 'sidebar/follow.inc.html' %}
+{% endif %}
+
+{% if reporters and reporters.count > 0 %}
+	{% include 'streams/sidebar/reporters.inc.html' %}
+{% endif %}
+
+{% include 'sidebar/appstore.inc.html' %}

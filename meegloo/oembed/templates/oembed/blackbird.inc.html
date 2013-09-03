@@ -1,0 +1,17 @@
+<div style="background: url('{{ profile_background_image }}') #{{ profile_background_colour }}; padding: 20px; font-family: 'Helvetica Neue', Helvetica, Arial, Sans-serif;">
+	<p style="background: #fff; padding: 10px 12px 10px 12px; margin: 0; min-height: 48px; color: #{{ profile_link_colour }}; font-size: 18px !important; line-height: 22px !important; -moz-border-radius: 5px; -webkit-border-radius: 5px;">
+		<span style="font-family: Georgia, Palatino, Helvetica Neue, Helvetica, Arial, sans-serif !important;">{{ text|safe }}</span>
+		
+		<span style="font-size: 12px !important; display: block;">
+			<a title="{{ timestamp }}" href="{{ url }}">{{ easy_timestamp }}</a> via {{ source|safe }}
+		</span>
+		
+		<span style="display: block; width: 100%; clear: both; margin-top: 8px; padding-top: 12px; height: 40px; border-top: 1px solid #fff; border-top: 1px solid #e6e6e6;">
+			<span style="line-height: 19px !important;">
+				<a href="http://twitter.com/{{ screen_name }}"><img src="{{ profile_image }}" style="float: left; margin: 0 7px 0 0px; width: 38px; height: 38px;" /></a>
+				<a href="http://twitter.com/{{ screen_name }}" style="color: #{{ profile_link_colour }}; text-decoration: none;"><strong>@{{ screen_name }}</strong></a><br/>
+				<span style="font-size: 12px;">{{ real_name }}</span>
+			</span>
+		</span>
+	</p>
+</div>
