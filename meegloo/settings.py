@@ -125,22 +125,22 @@ API_KEYS = {
 
 OAUTH_CREDENTIALS = {
 	'TWITTER': {
-		'CONSUMER_KEY': 'JuPHx3I2dj1RhOu6SbrRag',
-		'CONSUMER_SECRET': '8Du70f1zvn67me9WdxZeH31GJKa7nwMHFn8VEkPS8MQ',
+		'CONSUMER_KEY': '',
+		'CONSUMER_SECRET': '',
 		'SSL': True,
 		'URLS': {
 			'REQUEST_TOKEN': 'https://twitter.com/oauth/request_token',
 			'ACCESS_TOKEN': 'https://twitter.com/oauth/access_token',
 			'AUTHORISATION': 'https://twitter.com/oauth/authorize'
 		},
-		'BOT_TOKEN': '434256943-OYdjqTMJ7BvLM5fGhqYxeMal5d14warmVCa73yqF',
-		'BOT_SECRET': 'fmZyhZBkx49ziMxrVc26lyOcqDBd9yFkgyE2KAk',
+		'BOT_TOKEN': '',
+		'BOT_SECRET': '',
 		'VERBOSE_NAME': 'Twitter',
 		'FRIENDSHIPS': True
 	},
 	'FLICKR': {
-		'CONSUMER_KEY': '9c7f7691c6af611084c6af4e9e2fd059',
-		'CONSUMER_SECRET': '0041ecff2688bd92',
+		'CONSUMER_KEY': '',
+		'CONSUMER_SECRET': '',
 		'SERVER': 'www.flickr.com',
 		'URLS': {
 			'REQUEST_TOKEN': 'http://www.flickr.com/services/oauth/request_token',
@@ -156,8 +156,8 @@ OAUTH_CREDENTIALS = {
 		'FRIENDSHIPS': False
 	},
 	'FACEBOOK': {
-		'CONSUMER_KEY': '193403867386972',
-		'CONSUMER_SECRET': 'e75acc45c13a04e97016a879df116717',
+		'CONSUMER_KEY': '',
+		'CONSUMER_SECRET': '',
 		'URLS': {
 			'DIALOG': 'https://www.facebook.com/dialog/oauth?client_id=193403867386972&redirect_uri=http%3A%2F%2Fmeegloo.com%2Foauth%2Ffacebook%2Freturn%2F&scope=publish_stream',
 			'ACCESS_TOKEN': 'https://graph.facebook.com/oauth/access_token?client_id=193403867386972&redirect_uri=http%%3A%%2F%%2Fmeegloo.com%%2Foauth%%2Ffacebook%%2Freturn%%2F&client_secret=e75acc45c13a04e97016a879df116717&code=%s'
@@ -168,8 +168,8 @@ OAUTH_CREDENTIALS = {
 }
 
 AUTH_PROFILE_MODULE = 'core.profile'
-MAILCHIMP_API_KEY = '152980702cd408180a2e4cb31afad9e3-us2'
-MAILCHIMP_LIST_ID = 'd4da5cc89b'
+MAILCHIMP_API_KEY = ''
+MAILCHIMP_LIST_ID = ''
 
 UPLOADIFY_PATH = '/media/uploadify/'
 UPLOADIFY_UPLOAD_PATH = '%suploads' % MEDIA_URL
